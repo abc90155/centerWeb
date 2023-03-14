@@ -1,0 +1,128 @@
+{% extends 'temp.html' %}
+{% load i18n %}
+{% load static %}
+
+{%block chatContent%}
+<div class="col-lg-8 col-md-32">
+    <div class="card chat-card">
+        <div class="card-header">
+            <h5>Chat</h5>
+            <div class="card-header-right">
+                <div class="btn-group card-option">
+                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="feather icon-more-horizontal"></i>
+                    </button>
+                    <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">
+                        <li class="dropdown-item full-card"><a href="#!"><span><i class="feather icon-maximize"></i> maximize</span><span style="display:none"><i class="feather icon-minimize"></i> Restore</span></a></li>
+                        <li class="dropdown-item minimize-card"><a href="#!"><span><i class="feather icon-minus"></i> collapse</span><span style="display:none"><i class="feather icon-plus"></i> expand</span></a></li>
+                        <li class="dropdown-item reload-card"><a href="#!"><i class="feather icon-refresh-cw"></i> reload</a></li>
+                        <li class="dropdown-item close-card"><a href="#!"><i class="feather icon-trash"></i> remove</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row m-b-20 received-chat">
+                <div class="col-auto p-r-0">
+                    <img src="{% static 'images/user/avatar-1.jpg' %}" alt="user image" class="img-radius wid-40">
+                </div>
+                <div class="col">
+                    <div class="msg">
+                        <p class="m-b-0">Nice to meet you!</p>
+                    </div>
+                    <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>10:20am</p>
+                </div>
+            </div>
+            <div class="row m-b-20 send-chat">
+                <div class="col">
+                    <div class="msg">
+                        <p class="m-b-0">Nice to meet you!</p>
+                    </div>
+                    <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>10:20am</p>
+                </div>
+                <div class="col-auto p-l-0">
+                    <img src="{% static 'images/user/avatar-2.jpg' %}" alt="user image" class="img-radius wid-40">
+                </div>
+            </div>
+            <div class="row m-b-20 received-chat">
+                <div class="col-auto p-r-0">
+                    <img src="{% static 'images/user/avatar-1.jpg' %}" alt="user image" class="img-radius wid-40">
+                </div>
+                <div class="col">
+                    <div class="msg">
+                        <p class="m-b-0">Nice to meet you!</p>
+                        <img src="assets/images/widget/dashborad-1.jpg" alt="">
+                        <img src="assets/images/widget/dashborad-3.jpg" alt="">
+                    </div>
+                    <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>10:20am</p>
+                </div>
+            </div>
+            <div class="input-group m-t-15">
+                <input type="text" name="task-insert" class="form-control" id="Project" placeholder="Send message">
+                <div class="input-group-append">
+                    <button class="btn btn-primary">
+                        <i class="feather icon-message-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}
+
+{%block chatItem%}
+<div class="col-lg-4 col-md-32">
+    <div class="card table-card review-card">
+        <div class="card-header borderless ">
+            <h5>Topics</h5>
+            <div class="card-header-right">
+                <div class="btn-group card-option">
+                    
+                    <button class="btn  btn-icon btn-primary" data-toggle="modal" data-target="#exampleModalCenter">test</button>
+                      
+                    <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">
+                        <li class=""><a href="#!"><span><i class="feather icon-maximize"></i> New Topic</span><span style="display:none"><i class="feather icon-minimize"></i> Restore</span></a></li>
+                        <li class="dropdown-item minimize-card"><a href="#!"><span><i class="feather icon-minus"></i> collapse</span><span style="display:none"><i class="feather icon-plus"></i> expand</span></a></li>
+                        <li class="dropdown-item reload-card"><a href="#!"><i class="feather icon-refresh-cw"></i> reload</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0">
+            <div class="review-block">
+
+                <div class="row"><button>test</button></div>
+
+                <div class="row"></div>
+                <div class="row"></div>
+                <div class="row"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Team Members</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+          
+            <form method="POST" action="{% url 'chat' %}" name="chat_form">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" value="save" >Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
