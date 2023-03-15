@@ -90,12 +90,9 @@
         </div>
         <div class="card-body pb-0">
             <div class="review-block">
-
-                <div class="row"><button>test</button></div>
-
-                <div class="row"></div>
-                <div class="row"></div>
-                <div class="row"></div>
+                {%for x in chatListAll%}
+                    <div id={{x.id}}>{{x.chatTitle}}</div>
+                {% endfor%}
             </div>
         </div>
     </div>

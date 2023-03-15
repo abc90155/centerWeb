@@ -9,11 +9,9 @@ def index(request):
     context["name"] = "Hello, World."
     
     return render(request, "temp.html", context)
-    #return  HttpResponse("Hello, Django.")
 
 def chatPage(request):
     context = {}
-    context = {'name':'cooper'}
 
     chatList = chat.objects.all().values()
 
@@ -22,5 +20,13 @@ def chatPage(request):
     if request.method == "POST":
         if form.is_valid():
             form.save()
+    elif request.is_ajax:
+        "todo: ajax to load chat content"
+        return render(request, 'chat.html', context)
+    else:
+        context = {"form": form,
+                    "name":'YOOOOOOOO~Cooper',
+                    "chatListAll":chatList,
+                    }
         
     return render(request, 'chat.html', context)
