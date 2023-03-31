@@ -1,4 +1,4 @@
-from .models import chat
+from .models import chat, replys
 from django import forms
 from django.forms.widgets import NumberInput
 
@@ -19,4 +19,21 @@ class chatModelForm(forms.ModelForm):
             'createdData' : forms.DateTimeInput(attrs={'class':'form-control'}),
             'chatReceiver' : forms.TextInput(attrs={'class':'form-control'}),
             'chatContent' : forms.Textarea(attrs={'class':'form-control'}),
+        }
+
+class replyModelForm(forms.ModelForm):
+    class Meta:
+        model = replys
+        fields =[
+            'replyBelongsTo',
+            'replyerID',
+            'replyDate',
+            'replyContent',
+        ] 
+
+        widgets= {
+            'replyBelongsTo' : forms.HiddenInput(),
+            'replyerID' : forms.Select(attrs={'class':'form-control'}),#forms.HiddenInput(),
+            'replyDate' : forms.HiddenInput(),
+            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message'}),
         }

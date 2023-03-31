@@ -1,0 +1,47 @@
+{% extends 'chat.html' %}
+{% load i18n %}
+{% load static %}
+
+{%block chatDeatils%}
+<ul class="list-group list-group-flush">
+    <li class="list-group-item">標題:{{ object.chatTitle }}</li>
+</ul>
+
+
+<div class="row m-b-20 send-chat">
+    <div class="col">
+        <div class="msg">
+            <p class="m-b-0">{{ object.chatContent }}</p>
+        </div>
+        <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ object.createdData|date:'Y/m/d' }}</p>
+    </div>
+    <div class="col-auto p-l-0">
+        <img src="{% static 'images/user/avatar-2.jpg' %}" alt="user image" class="img-radius wid-40">
+    </div>
+</div>
+
+{% if replys %}
+    {% for obj in replys %}
+        <div class="row m-b-20 received-chat">
+            <div class="col-auto p-r-0">
+                <img src="{% static 'images/user/avatar-1.jpg' %}" alt="user image" class="img-radius wid-40">
+            </div>
+            <div class="col">
+                <div class="msg">
+                    <p class="m-b-0">{{obj.replyContent}}</p>
+                </div>
+                <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ obj.replyDate|date:'Y/m/d' }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="POST" action="">
+    {% csrf_token %}
+    {{replyForm.as_p}}
+    <button class="btn btn-primary" type="submit" value="save">Add comment</button>
+</form>
+
+{%endblock%}
+
+

@@ -1,0 +1,60 @@
+<div class="col-lg-4 col-md-32">
+    <div class="card table-card review-card">
+        <div class="card-header borderless ">
+            <h5>Topics</h5>
+            <div class="card-header-right">
+                <div class="btn-group card-option">
+
+                    {% if form %}
+                        <button class="btn  btn-icon btn-primary" data-toggle="modal" data-target="#exampleModalCenter">ADD</button>
+                    {% endif%}
+                    
+                    <ul class="list-unstyled card-option dropdown-menu dropdown-menu-right">
+                        <li class=""><a href="#!"><span><i class="feather icon-maximize"></i> New Topic</span><span style="display:none"><i class="feather icon-minimize"></i> Restore</span></a></li>
+                        <li class="dropdown-item minimize-card"><a href="#!"><span><i class="feather icon-minus"></i> collapse</span><span style="display:none"><i class="feather icon-plus"></i> expand</span></a></li>
+                        <li class="dropdown-item reload-card"><a href="#!"><i class="feather icon-refresh-cw"></i> reload</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0">
+            <div class="review-block">
+                {%for x in chatListAll%}
+                    <div id={{x.chatTitle}}> <a href="{% url 'chatDetails' x.id%}">{{x.chatTitle}}</a> </div>
+                {% endfor%}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Add Team Members</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+          
+            <form method="POST" action="{% url 'chat' %}">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" value="save" >Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    //var topic_list = {{ chat_list_title }}
+    $("#jhkghj").click(function() {
+        alert("Handler for .click() called.");
+        $("#chat_topic_name").text("test TEST test 2321654")
+    });
+</script>

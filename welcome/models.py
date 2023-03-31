@@ -24,8 +24,9 @@ class chatTopics(models.Model):
         return self.topicTitle
 
 class replys(models.Model):
-    replyBelongsTo = models.ForeignKey(chatTopics, null = True, on_delete= models.SET_NULL, related_name = 'replyBelong')
+    replyBelongsTo = models.ForeignKey(chat, null = True, on_delete= models.SET_NULL, related_name = 'replyBelong')
     replyerID = models.ForeignKey(User, null = True, on_delete= models.SET_NULL, related_name = 'replyer', blank = True)
+    replyDate = models.DateTimeField(default = timezone.now)
     replyContent = models.TextField()
 
     def __str__(self):
