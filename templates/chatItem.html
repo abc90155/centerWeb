@@ -19,8 +19,12 @@
         </div>
         <div class="card-body pb-0" style="height:800px;overflow-y:auto">
             <div class="review-block">
-                {%for x in chatListAll%}
-                    <div id={{x.chatTitle}}> <a href="{% url 'chatDetails' x.id%}">{{x.chatTitle}}</a> </div>
+                {%for chat in chatListAll%}
+                    <div id="{{chat.id}}"> 
+                        <a href="{% url 'chatDetails' chat.id%}" style="padding:1.5em">
+                            {{chat.chatTitle}}
+                        </a> 
+                    </div>
                 {% endfor%}
             </div>
         </div>

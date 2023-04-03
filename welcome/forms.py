@@ -2,6 +2,11 @@ from .models import chat, replys
 from django import forms
 from django.forms.widgets import NumberInput
 
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=100)
+    password = forms.CharField(widget=forms.PasswordInput)
+
 class chatModelForm(forms.ModelForm):
     class Meta:
         model = chat

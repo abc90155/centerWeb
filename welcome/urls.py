@@ -24,4 +24,6 @@ urlpatterns = [
     path('', RedirectView.as_view(url='chat/')),
     path('chat', views.chatPage, name = 'chat'),
     path('chat/<int:pk>/', chatDetail.as_view(), name='chatDetails'),
+    path('login/',views.login_user, name='login'),
+    path('logout/',views.logout_view, name='logout')
 ]
