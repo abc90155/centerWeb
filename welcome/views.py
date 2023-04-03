@@ -42,7 +42,7 @@ class chatDetail(DetailView):
         #replys about this topic
         context['replys'] = replys.objects.filter(replyBelongsTo_id = self.kwargs['pk']).all().values()
 
-        #nedd to modify afetr add user model
+        #need to modify afetr add user model; 
         context['replyForm'] = replyModelForm(initial={'replyBelongsTo': self.get_object(),}) # 'replyerID': 'abc90155'})
         
         return context
@@ -61,6 +61,3 @@ class chatDetail(DetailView):
             return HttpResponseRedirect('/welcome/chat/' + str(pk))
         else:
             print("YOU SHALL NOT PASS!")
-
-    def form_valid(self, form):
-        return super().form_valid(form)

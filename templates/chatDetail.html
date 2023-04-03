@@ -3,15 +3,16 @@
 {% load static %}
 
 {%block chatDeatils%}
-<ul class="list-group list-group-flush">
+<!--<ul class="list-group list-group-flush">
     <li class="list-group-item">標題:{{ object.chatTitle }}</li>
-</ul>
-
+</ul>-->
 
 <div class="row m-b-20 send-chat">
     <div class="col">
         <div class="msg">
-            <p class="m-b-0">{{ object.chatContent }}</p>
+            <p class="m-b-0">
+                <div class="chatContentDiv">{{ object.chatContent }}</div>
+            </p>
         </div>
         <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ object.createdData|date:'Y/m/d' }}</p>
     </div>
@@ -28,7 +29,9 @@
             </div>
             <div class="col">
                 <div class="msg">
-                    <p class="m-b-0">{{obj.replyContent}}</p>
+                    <p class="m-b-0">
+                        <div class="chatContentDiv">{{obj.replyContent}}</div>
+                    </p>
                 </div>
                 <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ obj.replyDate|date:'Y/m/d' }}</p>
             </div>
@@ -36,11 +39,16 @@
     {% endfor %}
 {% endif %}
 
-<form method="POST" action="">
-    {% csrf_token %}
-    {{replyForm.as_p}}
-    <button class="btn btn-primary" type="submit" value="save">Add comment</button>
-</form>
+<style>
+    .chatContentDiv {
+        position: relative;
+        height: 50%;
+        width: 200px;
+        margin:auto;
+        text-align:left;
+        overflow-wrap: break-word !important;
+    }
+</style>
 
 {%endblock%}
 
