@@ -24,12 +24,13 @@
         <div class="card-body" style="height:400px;overflow-x:hidden;overflow-y:auto">
             {%block chatDeatils%}{%endblock%}
         </div>
-        
+        {% if replyForm %}
         <form method="POST" action="">
             {% csrf_token %}
             {{replyForm.as_p}}
             <button class="btn btn-primary float-right" type="submit" value="save">Add comment</button>
         </form>
+        {% endif%}
     </div>
 </div>
 {%endblock%}
