@@ -1,0 +1,67 @@
+{% extends 'temp.html' %}
+{% load i18n %}
+
+
+{%block chatContent%}
+<div class="row">
+    <h1>{% trans 'Set up Your Profile'%}</h1>
+</div>
+<hr>
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="row" style="display:flex; align-items: stretch;">
+        <!-- [ sample-page ] start -->
+        <div class="col-md-12 col-xl-4">
+
+            <div class="card" style="min-height: 600px;">
+                <h5 class="card-header">{% trans 'Team Information'%}</h5>
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert bg-{% if message.tags == 'error'%}danger{%else%}{{ message.tags }}{%endif%} text-light p-3" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+                            {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+                <div class="card-body">
+                    <!-- <h5 class="card-title">Special title treatment</h5> -->
+
+                    <div class="form-group">
+                        <label for="username">{% trans 'Username'%}:</label>
+                        <input type="text" id="username" name="username" class="form-control" value="{{team_code}}"
+                            readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="first_name">{% trans 'First Name'%}:</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">{% trans 'Last Name'%}:</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">{% trans 'Company'%}:</label>
+                        <select id="company" name="company" class="form-control" required>
+                            <option value="">--Select--</option>
+                            <option value="CCH">{% trans 'CHanghua Christian Hospital'%}</option>
+                            <option value="HTC">{% trans 'HTC'%}</option>
+                            <option value="others">{% trans 'Others'%}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="work_id">{% trans 'Work ID'%}:</label>
+                        <input type="text" id="work_id" name="work_id" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">{% trans 'Department'%}:</label>
+                        <input type="text" id="department" name="department" class="form-control" required>
+                    </div>
+                    <input type="submit" value="Submit" class="btn btn-primary">
+
+                </div>
+            </div>
+        </div>
+        <!-- [ sample-page ] end -->
+    </div>
+</form>
+
+{%endblock%}

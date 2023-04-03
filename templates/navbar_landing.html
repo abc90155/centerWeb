@@ -1,0 +1,87 @@
+{%load static%}
+{% load i18n %}
+<nav class="pcoded-navbar  ">
+    <div class="navbar-wrapper  ">
+        <div class="navbar-content scroll-div ">
+
+            <div class="">
+                <div class="main-menu-header">
+                    <span><i class="fa fa-users m-l-5" style="font-size: 3em; color: white"></i></span>
+                    <!-- <img class="img-radius" src="{% static 'assets/images/user/avatar-2.jpg'%}" alt="User-Profile-Image"> -->
+                    <div class="user-details">
+                        <!-- <span>{{team_name}}</span> -->
+                        <div id="more-details">{{ request.session.team_name }}<i class="fa fa-chevron-down m-l-5"></i></div>
+                    </div>
+                </div>
+                <div class="collapse1" id="nav-user-link">
+                    <ul class="list-unstyled">
+                        <!-- <li class="list-group-item"><a href="/workspace"><i
+                                    class="feather icon-settings m-r-5"></i>Settings</a></li> -->
+                        <li class="list-group-item"><a href="/logout"><i
+                                    class="feather icon-log-out m-r-5"></i>{% trans 'Logout'%}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="nav pcoded-inner-navbar ">
+                <li class="nav-item pcoded-menu-caption">
+                    <label>Actions</label>
+                </li>
+                <li class="nav-item">
+                    <a href="/workspace" class="nav-link ">
+                        <span class="pcoded-micon">
+                            <i class="feather icon-home"></i>
+                        </span>
+                        <span class="pcoded-mtext">{% trans 'Workspace'%}</span>
+                    </a>
+                </li>
+                {% if not request.session.mou_approved %}
+                <li class="nav-item">
+                    <a href="/workspace/download/mou" class="nav-link ">
+                        <span class="pcoded-micon">
+                            <i class="feather icon-file-text"></i>
+                        </span>
+                        <span class="pcoded-mtext">{% trans 'Download MOU'%}</span>
+                    </a>
+                </li>
+                {%endif%}
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="#!" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-layout"></i></span><span class="pcoded-mtext">
+                                    {% trans 'Download Dataset'%}</span></a>
+                    <ul class="pcoded-submenu" style="display: none;">
+                        <li><a href="/workspace/download/datasets1">Topic 1</a></li>
+                        <li><a href="/workspace/download/datasets2">Topic 2</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="/workspace/position/update" class="nav-link ">
+                        <span class="pcoded-micon">
+                            <i class="feather icon-align-justify"></i>
+                        </span>
+                        <span class="pcoded-mtext"> 
+                            {% trans 'Update Position'%}
+                        </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/workspace/leadershipboard" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-tag"></i></span><span class="pcoded-mtext">{% trans 'Leadership Board' %}</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-upload"></i></span><span class="pcoded-mtext">{% trans 'Submit ' %}</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-book"></i></span><span class="pcoded-mtext">{% trans 'Rules ' %}</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-phone"></i></span><span class="pcoded-mtext">{% trans 'Contact Us ' %}</span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% include 'notification.html' %}

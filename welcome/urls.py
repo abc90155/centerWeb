@@ -20,10 +20,12 @@ from . import views
 from .views import *
 
 urlpatterns = [
-    path('', views.index),
+    path('', views.index, name="welcome"),
     path('', RedirectView.as_view(url='chat/')),
     path('chat', views.chatPage, name = 'chat'),
     path('chat/<int:pk>/', chatDetail.as_view(), name='chatDetails'),
     path('login/',views.login_user, name='login'),
-    path('logout/',views.logout_view, name='logout')
+    path('logout/',views.logout_view, name='logout'),    
+    path('signup/',views.signup, name='signup'),    
+    path('settings/',views.settings, name='settings')
 ]
