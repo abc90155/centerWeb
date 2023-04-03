@@ -35,5 +35,5 @@ class replyModelForm(forms.ModelForm):
             'replyBelongsTo' : forms.HiddenInput(),
             'replyerID' : forms.Select(attrs={'class':'form-control'}),#forms.HiddenInput(),
             'replyDate' : forms.HiddenInput(),
-            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message'}),
+            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message', 'rows': 2}),
         }
