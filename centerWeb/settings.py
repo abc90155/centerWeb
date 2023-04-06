@@ -105,7 +105,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'zh-Hant'
+LANGUAGE_CODE = 'en-us'#'zh-hant'
+# LANGUAGE_CODE = 'zh-hant'
 
 TIME_ZONE = 'Asia/Taipei'
 
@@ -125,3 +126,14 @@ STATICFILES_DIRS=[
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'actechforlife@gmail.com'
+EMAIL_HOST_PASSWORD = 'atnexjcfgtodffgx'
+DEFAULT_FROM_EMAIL = 'actechforlife@gmail.com'
+SERVER_EMAIL = 'actechforlife@gmail.com'
