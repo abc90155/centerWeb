@@ -1,19 +1,13 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect
-from django.http import JsonResponse
-from django.http import HttpResponse
 from .forms import chatModelForm, replyModelForm, LoginForm,SignUpForm
 from .models import chat, replys, Profile
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views.generic.edit import FormMixin, ModelFormMixin
+from django.views.generic import DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 from .utils import (
-    send_signup_email,
-    getmailinglist,
-    list_files,
-    post_announcement,
+    send_signup_email
 )
 
 
@@ -118,7 +112,7 @@ class chatDetail(DetailView):
         context['replyForm'] = replyModelForm(initial={'replyBelongsTo': self.get_object(),}) # 'replyerID': 'abc90155'})
         
         return context
-    @login_required(login_url='login')
+    #@login_required(login_url='login')
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         form = replyModelForm(request.POST or None)
