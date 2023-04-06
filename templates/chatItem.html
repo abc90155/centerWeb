@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-body pb-0" style="height:800px;overflow-y:auto">
+        <div class="card-body pb-0" style="height:600px;overflow-y:auto">
             <div class="review-block">
                 {%for chat in chatListAll%}
                     <div id="{{chat.id}}"> 
@@ -36,7 +36,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Add Team Members</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">New Topic</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -59,6 +59,6 @@
     //var topic_list = {{ chat_list_title }}
     $("#jhkghj").click(function() {
         alert("Handler for .click() called.");
-        $("#chat_topic_name").text("test TEST test 2321654")
+        $("#chat_topic_name").text(chat.chatTitle)
     });
 </script>

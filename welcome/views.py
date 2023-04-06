@@ -9,6 +9,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.db.models import Q
 from .utils import (
     send_signup_email,
     getmailinglist,
@@ -86,11 +88,16 @@ def signup(request):
 
 @login_required(login_url='login')
 def chatPage(request):
-    chatList = chat.objects.all().values()
+    userNow = str(request.user)
+    if str(request.user) != 'admin':
+        chatList = chat.objects.filter(Q(chatOwner = request.user) | Q(chatReceiver = request.user)).all().order_by('-createdData').values()
+    else:
+        chatList = chat.objects.all().order_by('-createdData').values()
+    
+    #todo : add a initial value
     form = chatModelForm(request.POST or None)
-
+    
     context = {"form": form,
-                "name":'YOOOOOOOO~Cooper',
                 "chatListAll":chatList,
                 }
 
@@ -105,27 +112,28 @@ class chatDetail(DetailView):
     model = chat
     template_name = 'chatDetail.html'
     replys = replyModelForm
-
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #todo: add a filter to login user in the future
-        context['chatListAll'] = chat.objects.all().values()
+        
+        if str(self.request.user) != 'admin':
+            context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdData').values()
+        else:
+            context['chatListAll'] = chat.objects.all().order_by('-createdData').values()
+
+        context['title'] = self.get_object()
 
         #replys about this topic
         context['replys'] = replys.objects.filter(replyBelongsTo_id = self.kwargs['pk']).all().values()
 
-        #need to modify afetr add user model; 
-        context['replyForm'] = replyModelForm(initial={'replyBelongsTo': self.get_object(),}) # 'replyerID': 'abc90155'})
-        
+        context['replyForm'] = replyModelForm(initial={'replyBelongsTo': self.get_object(), 'replyerID': self.request.user,})
+
         return context
-    @login_required(login_url='login')
+    
+    @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
         form = replyModelForm(request.POST or None)
-
-        print("<<<<<<<<<<<<<<<<<<")
-        print(form)
-        print("<<<<<<<<<<<<<<<<<<<")
         
         if form.is_valid():
             form.save()
