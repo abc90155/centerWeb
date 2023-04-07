@@ -28,6 +28,15 @@ class chatModelForm(forms.ModelForm):
             'chatContent' : forms.Textarea(attrs={'class':'form-control'}),
         }
 
+        labels = {
+            'chatOwner': "提問人",
+            'chatTitle' : "標題",
+            'createdData' : "建立時間",
+            'chatReceiver' : "收件人",
+            'chatContent' : "內容",
+
+        }
+
 
 class replyModelForm(forms.ModelForm):
 
@@ -42,9 +51,16 @@ class replyModelForm(forms.ModelForm):
 
         widgets= {
             'replyBelongsTo' : forms.HiddenInput(),
-            'replyerID' : forms.Select(attrs={'class':'form-control'}),#forms.HiddenInput(),
+            'replyerID' : forms.HiddenInput(),
             'replyDate' : forms.HiddenInput(),
             'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message', 'rows': 2}),
+        }
+
+        labels = {
+            'replyBelongsTo' : "主題",
+            'replyerID' : "回覆者",
+            'replyDate' : "回覆日期",
+            'replyContent' : "回覆", 
         }
 
 class SignUpForm(UserCreationForm):
