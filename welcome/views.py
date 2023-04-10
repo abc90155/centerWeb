@@ -44,9 +44,10 @@ def login_user(request):
                     request.session['user']['type'] = 'test'
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
-                    return redirect('settings')
-                
-
+                    return redirect('settings')  
+                print('>>>>>>>>>>>>>>>>>',request.user)
+                if request.user.is_staff:
+                    return redirect('admin_home')                          
                 return redirect('chat')                  
             else:
                 messages.error(request, _("Username and password does not match."))
@@ -138,25 +139,32 @@ class chatDetail(DetailView):
             print("YOU SHALL NOT PASS!")
 
 
-def settings(request):      
+@login_required(login_url='login')
+def settings(request):
+    # Get the profile of the current user or create one if it doesn't exist
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    profile_dict = {'profile': profile, 'first_name': request.user.first_name, 'last_name': request.user.last_name}
+    if request.method == 'POST':
+        # Update the profile with the form data
+        request.user.first_name = request.POST['first_name']
+        request.user.last_name = request.POST['last_name']
+        request.user.save()
 
+        profile.company = request.POST['company']
+        profile.workid = request.POST['work_id']
+        profile.department = request.POST['department']
+        # profile.type = 'request.POST['user_type']'
+        profile.user.save()
+        profile.save()
+        messages.success(request, 'Profile updated successfully.')
 
-    # tform = TeamsForm()
-    # tform.fields['team_code'].initial = generate_unique_strings()[random.randint(0,2)]
-    # tform.fields['user'].initial = request.user.id
-    # context = {'form':tform}
-    # if request.method == 'POST':
-    #     form = TeamsForm(request.POST, initial={'team_code': tform.fields['team_code'].initial})
-    #     if form.is_valid():            
-    #         form.cleaned_data['user'] = request.user.id
-    #         form.save()
-    #         # print(team)
-    #     else:
-    #         print(form.errors)
-            
-    return render(request, 'settings.html')
+        # Redirect the user back to the settings page
+        return redirect('settings')
 
-
+    # Render the settings.html template with the profile as context
+    print('>>>>>>>>>>>>>>>>>>>>>>>',profile)
+    return render(request, 'settings.html', profile_dict)
+    
 @login_required(login_url='login')
 def talking(request):
     context = {}
@@ -185,23 +193,24 @@ def talking(request):
         return redirect(request.META.get('HTTP_REFERER'))
     
     return render(request, 'chat_home.html', context=context)
-@login_required(login_url='login')
-def chatPage(request):
-    userNow = str(request.user)
-    if str(request.user) != 'admin':
-        chatList = chat.objects.filter(Q(chatOwner = request.user) | Q(chatReceiver = request.user)).all().order_by('-createdDate').values()
-    else:
-        chatList = chat.objects.all().order_by('-createdDate').values()
-    
-    #todo : add a initial value
-    form = chatModelForm(request.POST or None)
-    
-    context = {"form": form,
-                "chatListAll":chatList,
-                }
 
-    if request.method == "POST":
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/welcome/chat')
-    return render(request, 'chat.html', context)
+@login_required(login_url='login')
+def admin_home(request):
+    context = {}
+    user = request.user
+    
+    # Get the chats that belong to the logged-in user and are not archived
+    chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
+    context['chats'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+
+    if request.method == 'POST':
+        # Get the list of IDs of the selected chats
+        selected_ids = request.POST.getlist('selected_chats')
+        
+        # Archive the selected chats
+        chat.objects.filter(id__in=selected_ids).update(archived=True)
+        
+        # Redirect back to the same page
+        return redirect(request.META.get('HTTP_REFERER'))
+    
+    return render(request, 'admin_home.html', context=context)
