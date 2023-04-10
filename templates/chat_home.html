@@ -116,7 +116,7 @@
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <form method="POST" action="{% url 'chat' %}">
+      <form method="POST" action="{% url 'chat' %}" name = "newMessage">
         {% csrf_token %}
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">New Message</h5>
@@ -130,7 +130,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary" value="save">{% trans 'Send' %}</button>
+            <button type="submit" class="btn btn-primary" value="save">ADD</button>
           </div>
       </form>
     </div>
