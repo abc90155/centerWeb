@@ -111,7 +111,6 @@ class chatDetail(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print('>>>>>>>>>>>>>>>>>>>here')
         if str(self.request.user) != 'admin':
             context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
         else:
