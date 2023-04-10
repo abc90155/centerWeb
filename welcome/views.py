@@ -183,9 +183,14 @@ def talking(request):
     else:
         chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
 
-    form = chatModelForm(initial={'chatOwner' : user,})
+    form = chatModelForm(request.POST or None, initial={'chatOwner': user,})
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/welcome/talking')
     
     return render(request, 'chat_home.html', context=context)
 
