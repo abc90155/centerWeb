@@ -1,8 +1,9 @@
-from .models import chat, replys
+from .models import chat, replys, Profile, USER_COMPANY_CHOICES, USER_TYPE_CHOICES
 from django import forms
-from django.forms.widgets import NumberInput
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
+
 
 
 class LoginForm(forms.Form):
@@ -13,30 +14,27 @@ class chatModelForm(forms.ModelForm):
     class Meta:
         model = chat
         fields = [
-            'chatOwner',
             'chatTitle',
-            'createdData',
             'chatReceiver',
             'chatContent',
         ]
 
         widgets= {
-            'chatOwner': forms.Select(attrs={'class':'form-control'}),
+            # 'chatOwner': forms.Select(attrs={'class':'form-control'}),
             'chatTitle' : forms.TextInput(attrs={'class':'form-control'}),
-            'createdData' : forms.DateTimeInput(attrs={'class':'form-control'}),
-            'chatReceiver' : forms.TextInput(attrs={'class':'form-control'}),
+            # 'createdData' : forms.DateTimeInput(attrs={'class':'form-control'}),
+            'chatReceiver' : forms.Select(attrs={'class':'form-control'}),
             'chatContent' : forms.Textarea(attrs={'class':'form-control'}),
         }
 
         labels = {
-            'chatOwner': "提問人",
+            # 'chatOwner': "提問人",
             'chatTitle' : "標題",
-            'createdData' : "建立時間",
+            # 'createdData' : "建立時間",
             'chatReceiver' : "收件人",
             'chatContent' : "內容",
 
         }
-
 
 class replyModelForm(forms.ModelForm):
 
@@ -68,4 +66,21 @@ class SignUpForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')        
+        fields = ('username', 'email', 'password1', 'password2')  
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['company', 'department', 'workid', 'type']
+        labels = {
+            'company': 'Company',
+            'department': 'Department',
+            'workid': 'Work ID',
+            'type': 'User Type'
+        }
+        widgets = {
+            'company': forms.Select(choices=USER_COMPANY_CHOICES, attrs={'class': 'form-control'}),
+            'department': forms.TextInput(attrs={'class': 'form-control'}),
+            'workid': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.Select(choices=USER_TYPE_CHOICES, attrs={'class': 'form-control'}),
+        }

@@ -17,7 +17,7 @@
 	
 	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.3.js"></script>
-
+	{% block topScript %}{% endblock %}
 </head>
 <body class="">
 	<!-- Required Js -->
@@ -50,7 +50,7 @@
 						<label>Navigation</label>
 					</li>
 					<li class="nav-item">
-					    <a href="index.html" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
+					    <a href="{% url 'welcome' %}" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
 					</li>
 					<li class="nav-item pcoded-hasmenu">
 					    <a href="#!" class="nav-link "><span class="pcoded-micon"><i class="feather icon-layout"></i></span><span class="pcoded-mtext">Page layouts</span></a>
@@ -89,6 +89,10 @@
 
 						<li class = "nac-item">
 							<li><a href="{% url 'chat' %}" > Chat</a></li>
+						</li>
+
+						<li class = "nac-item">
+							<li><a href="{% url 'talking' %}" > Chat2</a></li>
 						</li>
 					</ul>
 				
@@ -130,7 +134,8 @@
         <!-- [ Main Content ] end -->
     </div>
 </div>
-
+{% block modal %}{% endblock %}
+{% block bottomScript%}{%endblock%}
 <script src="{% static 'js/vendor-all.min.js'%}"></script>
 <script src="{% static 'js/plugins/bootstrap.min.js'%}"></script>
 <script src="{% static 'js/pcoded.min.js'%}"></script>

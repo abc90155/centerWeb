@@ -16,7 +16,7 @@
                         <div class="chatContentDiv">{{ object.chatContent }}</div>
                     </p>
                 </div>
-                <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ object.createdData|date:'Y/m/d' }}</p>
+                <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ object.createdData|date:'Y/m/d h:m:s' }}</p>
             </div>
             {% if request.user == object.chatOwner %}
                 {% include 'chatIcon.html' %}
@@ -38,7 +38,7 @@
                             <div class="chatContentDiv">{{obj.replyContent}}</div>
                         </p>
                     </div>
-                    <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ obj.replyDate|date:'Y/m/d' }}</p>
+                    <p class="text-muted m-b-0"><i class="fa fa-clock-o m-r-10"></i>{{ obj.replyDate|date:'Y/m/d h:m:s' }}</p>
                 </div>
                 {% if request.user.id == obj.replyerID_id %}
                     {% include 'chatIcon.html' %}

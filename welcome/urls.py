@@ -27,5 +27,6 @@ urlpatterns = [
     path('login/',views.login_user, name='login'),
     path('logout/',views.logout_view, name='logout'),    
     path('signup/',views.signup, name='signup'),    
-    path('settings/',views.settings, name='settings')
+    path('settings/',views.settings, name='settings'),
+    path('talking/',views.talking, name='talking')
 ]

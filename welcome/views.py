@@ -1,22 +1,16 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect
-from django.http import JsonResponse
-from django.http import HttpResponse
 from .forms import chatModelForm, replyModelForm, LoginForm,SignUpForm
 from .models import chat, replys, Profile
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.views.generic.edit import FormMixin, ModelFormMixin
+from django.views.generic import DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.db.models import Q
-from .utils import (
-    send_signup_email,
-    getmailinglist,
-    list_files,
-    post_announcement,
-)
+from django.db.models import Q,F
+from .utils import send_signup_email
+from django.contrib.auth.models import User
+from django.views.decorators.http import require_POST
 
 
 @login_required(login_url='login')
@@ -90,9 +84,9 @@ def signup(request):
 def chatPage(request):
     userNow = str(request.user)
     if str(request.user) != 'admin':
-        chatList = chat.objects.filter(Q(chatOwner = request.user) | Q(chatReceiver = request.user)).all().order_by('-createdData').values()
+        chatList = chat.objects.filter(Q(chatOwner = request.user) | Q(chatReceiver = request.user)).all().order_by('-createdDate').values()
     else:
-        chatList = chat.objects.all().order_by('-createdData').values()
+        chatList = chat.objects.all().order_by('-createdDate').values()
     
     #todo : add a initial value
     form = chatModelForm(request.POST or None)
@@ -113,13 +107,14 @@ class chatDetail(DetailView):
     template_name = 'chatDetail.html'
     replys = replyModelForm
     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+        print('>>>>>>>>>>>>>>>>>>>here')
         if str(self.request.user) != 'admin':
-            context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdData').values()
+            context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
         else:
-            context['chatListAll'] = chat.objects.all().order_by('-createdData').values()
+            context['chatListAll'] = chat.objects.all().order_by('-createdDate').values()
 
         context['title'] = self.get_object()
 
@@ -144,6 +139,8 @@ class chatDetail(DetailView):
 
 
 def settings(request):      
+
+
     # tform = TeamsForm()
     # tform.fields['team_code'].initial = generate_unique_strings()[random.randint(0,2)]
     # tform.fields['user'].initial = request.user.id
@@ -158,3 +155,25 @@ def settings(request):
     #         print(form.errors)
             
     return render(request, 'settings.html')
+
+
+
+def talking(request):
+    context = {}
+    user = request.user
+    
+    # Get the chats that belong to the logged-in user and are not archived
+    chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
+    context['chats'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+
+    if request.method == 'POST':
+        # Get the list of IDs of the selected chats
+        selected_ids = request.POST.getlist('selected_chats')
+        
+        # Archive the selected chats
+        chat.objects.filter(id__in=selected_ids).update(archived=True)
+        
+        # Redirect back to the same page
+        return redirect(request.META.get('HTTP_REFERER'))
+    
+    return render(request, 'chat_home.html', context=context)

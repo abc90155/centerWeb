@@ -1,0 +1,188 @@
+{% extends 'chat_base_template.html' %}
+{%load i18n%}
+{% block chatContent %}
+<!-- left side chart area -->
+
+<div class="card chat-card col-lg-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
+  <div class="card-header">
+    <h5>Chat</h5>
+  </div>
+  <div class="card-body">
+    <div class="row m-b-20 received-chat">
+      <div class="col-auto p-r-0">
+        <img src="images/user/avatar-2.jpg" alt="user image" class="img-radius wid-40" />
+      </div>
+      <div class="col">
+        <div class="msg">
+          <p class="m-b-0">Nice to meet you!</p>
+        </div>
+        <p class="text-muted m-b-0">
+          <i class="fa fa-clock-o m-r-10"></i>10:20am
+        </p>
+      </div>
+    </div>
+    <div class="row m-b-20 send-chat">
+      <div class="col">
+        <div class="msg">
+          <p class="m-b-0">Nice to meet you!</p>
+        </div>
+        <p class="text-muted m-b-0">
+          <i class="fa fa-clock-o m-r-10"></i>10:20am
+        </p>
+      </div>
+      <div class="col-auto p-l-0">
+        <img src="images/user/avatar-3.jpg" alt="user image" class="img-radius wid-40" />
+      </div>
+    </div>
+    <div class="row m-b-20 received-chat">
+      <div class="col-auto p-r-0">
+        <img src="images/user/avatar-2.jpg" alt="user image" class="img-radius wid-40" />
+      </div>
+      <div class="col">
+        <div class="msg">
+          <p class="m-b-0">Nice to meet you!</p>
+          <img src="images/widget/dashborad-1.jpg" alt="" />
+          <img src="images/widget/dashborad-3.jpg" alt="" />
+        </div>
+        <p class="text-muted m-b-0">
+          <i class="fa fa-clock-o m-r-10"></i>10:20am
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="input-group m-t-15 m-b-20">
+    <textarea name="" id="" cols="30" rows="3" class="form-control"></textarea>
+    <div class="input-group-append">
+      <button class="btn btn-primary">
+        <i class="feather icon-message-circle"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<!--end of chat area-->
+<div class="col-xl-6 col-md-12">
+  <form action="" method="POST">
+    {% csrf_token %}
+  <div class="card table-card" style="min-height: 550px;">
+    <div class="card-header">
+      <h5>Messages</h5>
+      <button type="button" class="btn  btn-primary float-right" data-toggle="modal"
+      data-target="#exampleModalCenter">{% trans 'Compose New Message'%}</button>
+      <button type="submit" class="btn  btn-danger float-right">{% trans 'Delete selected'%}</button>
+        
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>
+                <div class="chk-option">
+                  <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                    <input type="checkbox" class="custom-control-input" id="check-all">
+                    <span class="custom-control-label"></span>
+                  </label>
+                </div>
+                Title
+              </th>
+              <th>To</th>
+              <th>Sent Date</th>
+              <th class="text-right">Viewed</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for chat in chats %}
+            {% if chat.is_viewed %}
+            <!-- set the eye to open if the message has not yet been viewed. -->
+            <tr >
+              <td>
+                <div class="chk-option">
+                  <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                    <input type="checkbox" name="selected_chats" class="checkbox custom-control-input" value="{{chat.id}}">
+                    <span class="custom-control-label"></span>
+                  </label>
+                </div>
+                <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
+                  <a href="">
+                  {{chat.chatTitle}}</a>
+                </div>
+              </td>
+              <td>{{chat.chatReceiver_username}}</td>
+              <td>{{chat.createdDate}}</td>
+              <td class="text-right"><i class="feather icon-eye-off" style="font-weight: bold;"></i></td>
+            </tr>
+            {%else%}
+            <tr style="font-weight:bolder">
+              <td>
+                <div class="chk-option">
+                  <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                    <input type="checkbox" name="selected_chats" class="checkbox custom-control-input" value="{{chat.id}}">
+                    <span class="custom-control-label"></span>
+                  </label>
+                </div>
+                <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
+                  <a href="">
+                    {{chat.chatTitle}}
+                  </a>
+                </div>
+              </td>
+              <td>{{chat.chatReceiver_username}}</td>
+              <td>{{chat.createdDate}}</td>
+              <td class="text-right"><i class="feather icon-eye-off" style="font-weight: bold;"></i></td>
+            </tr>
+            {%endif%}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</form>
+</div>
+
+{% endblock %}
+
+{% block modal%}
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'chat' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">New Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+          {{form.as_p}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" value="save">{% trans 'Send' %}</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+{%endblock%}
+
+{%block bottomScript%}
+<script>
+const checkAll = document.getElementById('check-all');
+const checkboxes = document.querySelectorAll('.checkbox');
+let isChecked = false;
+
+checkAll.addEventListener('click', () => {
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = !isChecked;
+  });
+  isChecked = !isChecked;
+});
+
+</script>
+{%endblock%}
