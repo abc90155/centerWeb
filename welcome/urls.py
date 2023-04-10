@@ -29,6 +29,7 @@ urlpatterns = [
     path('signup/',views.signup, name='signup'),    
     path('settings/',views.settings, name='settings'),
     path('talking/',views.talking, name='talking'),
-    path('admin_home/',views.admin_home, name='admin_home')
+    path('admin_home/',views.admin_home, name='admin_home'),    
+    path('delete_chat/',views.delete_chat, name='del_chat')
 
 ]

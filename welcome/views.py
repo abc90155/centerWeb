@@ -111,11 +111,18 @@ class chatDetail(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
         print('>>>>>>>>>>>>>>>>>>>here')
         if str(self.request.user) != 'admin':
-            context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
+            # context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
+            context['chatListAll'] = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
+
         else:
             context['chatListAll'] = chat.objects.all().order_by('-createdDate').values()
+
+        form = chatModelForm()
+
+        context['form'] = form
 
         context['title'] = self.get_object()
 
@@ -162,33 +169,36 @@ def settings(request):
         return redirect('settings')
 
     # Render the settings.html template with the profile as context
-    print('>>>>>>>>>>>>>>>>>>>>>>>',profile)
     return render(request, 'settings.html', profile_dict)
-
-
-
+    
 @login_required(login_url='login')
 def talking(request):
     context = {}
     user = request.user
-    
-    # Get the chats that belong to the logged-in user and are not archived
-    chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
-    context['chats'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
 
+    if str(request.user) != 'admin':
+        # chats = chat.objects.filter(Q(chatOwner = user) | Q(chatReceiver = user)).all().order_by('-createdDate').values()
+        chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
+
+    else:
+        chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
+
+    form = chatModelForm(initial={'chatOwner' : user,})
+    context['form'] = form
+    context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+    
+    return render(request, 'chat_home.html', context=context)
+
+def delete_chat(request):
     if request.method == 'POST':
         # Get the list of IDs of the selected chats
-        selected_ids = request.POST.getlist('selected_chats')
-        
+        selected_ids = request.POST.getlist('selected_chats')      
         # Archive the selected chats
         chat.objects.filter(id__in=selected_ids).update(archived=True)
         
         # Redirect back to the same page
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect('talking')
     
-    return render(request, 'chat_home.html', context=context)
-
-
 @login_required(login_url='login')
 def admin_home(request):
     context = {}
