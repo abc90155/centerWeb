@@ -14,23 +14,22 @@ class chatModelForm(forms.ModelForm):
     class Meta:
         model = chat
         fields = [
+            'chatOwner',
             'chatTitle',
             'chatReceiver',
             'chatContent',
         ]
 
         widgets= {
-            # 'chatOwner': forms.Select(attrs={'class':'form-control'}),
-            'chatTitle' : forms.TextInput(attrs={'class':'form-control'}),
-            # 'createdData' : forms.DateTimeInput(attrs={'class':'form-control'}),
-            'chatReceiver' : forms.Select(attrs={'class':'form-control'}),
-            'chatContent' : forms.Textarea(attrs={'class':'form-control'}),
+            'chatOwner': forms.HiddenInput(),#Select(attrs={'class':'form-control'}),
+            'chatTitle' : forms.TextInput(attrs={'class': 'form-control'}),
+            'chatReceiver' : forms.Select(attrs={'class': 'form-control'}),
+            'chatContent' : forms.Textarea(attrs={'class': 'form-control'}),
         }
 
         labels = {
-            # 'chatOwner': "提問人",
+            'chatOwner': "提問人",
             'chatTitle' : "標題",
-            # 'createdData' : "建立時間",
             'chatReceiver' : "收件人",
             'chatContent' : "內容",
 
@@ -51,7 +50,7 @@ class replyModelForm(forms.ModelForm):
             'replyBelongsTo' : forms.HiddenInput(),
             'replyerID' : forms.HiddenInput(),
             'replyDate' : forms.HiddenInput(),
-            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message', 'rows': 2}),
+            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message', 'rows': 3, 'cols' : 100}),
         }
 
         labels = {

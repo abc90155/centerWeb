@@ -157,14 +157,19 @@ def settings(request):
     return render(request, 'settings.html')
 
 
-
+@login_required(login_url='login')
 def talking(request):
     context = {}
     user = request.user
-    
-    # Get the chats that belong to the logged-in user and are not archived
-    chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
-    context['chats'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+
+    if str(request.user) != 'admin':
+        chats = chat.objects.filter(Q(chatOwner = user) | Q(chatReceiver = user)).all().order_by('-createdDate').values()
+    else:
+        chats = chat.objects.all().order_by('-createdDate').values()
+
+    form = chatModelForm(initial={'chatOwner' : user,})
+    context['form'] = form
+    context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
 
     if request.method == 'POST':
         # Get the list of IDs of the selected chats
@@ -172,8 +177,31 @@ def talking(request):
         
         # Archive the selected chats
         chat.objects.filter(id__in=selected_ids).update(archived=True)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/welcome/talking')
         
         # Redirect back to the same page
         return redirect(request.META.get('HTTP_REFERER'))
     
     return render(request, 'chat_home.html', context=context)
+@login_required(login_url='login')
+def chatPage(request):
+    userNow = str(request.user)
+    if str(request.user) != 'admin':
+        chatList = chat.objects.filter(Q(chatOwner = request.user) | Q(chatReceiver = request.user)).all().order_by('-createdDate').values()
+    else:
+        chatList = chat.objects.all().order_by('-createdDate').values()
+    
+    #todo : add a initial value
+    form = chatModelForm(request.POST or None)
+    
+    context = {"form": form,
+                "chatListAll":chatList,
+                }
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/welcome/chat')
+    return render(request, 'chat.html', context)

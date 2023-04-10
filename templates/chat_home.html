@@ -5,59 +5,26 @@
 
 <div class="card chat-card col-lg-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
   <div class="card-header">
-    <h5>Chat</h5>
+    {% if replyForm %}
+      <h5 id="chat_topic_name">Chat: {{title}}</h5>
+    {% else %}
+      <h5 id="chat_topic_name">Chat</h5>
+    {% endif %}
   </div>
+
+  <div class="card-body" style="height:400px;overflow-x:hidden;overflow-y:auto">    
+    {%block chatDeatils%}{%endblock%}
+  </div>
+  
+  {% if replyForm %}
   <div class="card-body">
-    <div class="row m-b-20 received-chat">
-      <div class="col-auto p-r-0">
-        <img src="images/user/avatar-2.jpg" alt="user image" class="img-radius wid-40" />
-      </div>
-      <div class="col">
-        <div class="msg">
-          <p class="m-b-0">Nice to meet you!</p>
-        </div>
-        <p class="text-muted m-b-0">
-          <i class="fa fa-clock-o m-r-10"></i>10:20am
-        </p>
-      </div>
-    </div>
-    <div class="row m-b-20 send-chat">
-      <div class="col">
-        <div class="msg">
-          <p class="m-b-0">Nice to meet you!</p>
-        </div>
-        <p class="text-muted m-b-0">
-          <i class="fa fa-clock-o m-r-10"></i>10:20am
-        </p>
-      </div>
-      <div class="col-auto p-l-0">
-        <img src="images/user/avatar-3.jpg" alt="user image" class="img-radius wid-40" />
-      </div>
-    </div>
-    <div class="row m-b-20 received-chat">
-      <div class="col-auto p-r-0">
-        <img src="images/user/avatar-2.jpg" alt="user image" class="img-radius wid-40" />
-      </div>
-      <div class="col">
-        <div class="msg">
-          <p class="m-b-0">Nice to meet you!</p>
-          <img src="images/widget/dashborad-1.jpg" alt="" />
-          <img src="images/widget/dashborad-3.jpg" alt="" />
-        </div>
-        <p class="text-muted m-b-0">
-          <i class="fa fa-clock-o m-r-10"></i>10:20am
-        </p>
-      </div>
-    </div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{replyForm.as_p}}
+        <button class="btn btn-primary float-right" type="submit" value="save"><i class="feather icon-message-circle"></i></button>
+    </form>
   </div>
-  <div class="input-group m-t-15 m-b-20">
-    <textarea name="" id="" cols="30" rows="3" class="form-control"></textarea>
-    <div class="input-group-append">
-      <button class="btn btn-primary">
-        <i class="feather icon-message-circle"></i>
-      </button>
-    </div>
-  </div>
+  {% endif%}
 </div>
 <!--end of chat area-->
 <div class="col-xl-6 col-md-12">
@@ -92,7 +59,7 @@
             </tr>
           </thead>
           <tbody>
-            {% for chat in chats %}
+            {% for chat in chatListAll %}
             {% if chat.is_viewed %}
             <!-- set the eye to open if the message has not yet been viewed. -->
             <tr >
@@ -104,7 +71,7 @@
                   </label>
                 </div>
                 <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
-                  <a href="">
+                  <a href="{% url 'chatDetails' chat.id%}">
                   {{chat.chatTitle}}</a>
                 </div>
               </td>
@@ -122,7 +89,7 @@
                   </label>
                 </div>
                 <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
-                  <a href="">
+                  <a href="{% url 'chatDetails' chat.id%}">
                     {{chat.chatTitle}}
                   </a>
                 </div>
