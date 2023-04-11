@@ -42,13 +42,15 @@ def login_user(request):
                 }
                 try:
                     profile = Profile.objects.get(user=request.user)
-                    request.session['user']['type'] = 'test'
+                    request.session['user']['type'] = 'User'
+                    if request.user.is_staff:
+                        request.session['user']['type'] = 'Administrator'
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
                     return redirect('settings')  
                 if request.user.is_staff:
                     return redirect('admin_home')                          
-                return redirect('chat')                  
+                return redirect('talking')                  
             else:
                 messages.error(request, _("Username and password does not match."))
                 return redirect('login')
@@ -114,6 +116,12 @@ class chatDetail(DetailView):
         user = self.request.user
         selected_chat = self.kwargs['pk']
         chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
+        # chat_obj = chat.objects.get(id=selected_chat)
+        # print('hhhhhhhhhhhhhhhhhhhhhhh',chat_obj.chatReceiver,user)
+        # if user != chat_obj.chatOwner:
+        #     chat_obj.is_viewed = True
+        #     chat_obj.viewedDate = timezone.now()
+        #     chat_obj.save()
 
 
         if str(self.request.user) != 'admin':
@@ -123,10 +131,10 @@ class chatDetail(DetailView):
         else:
             context['chatListAll'] = chat.objects.all().order_by('-createdDate').values()
 
-        # Paginate chatListAll queryset with 10 items per page
-        paginator = Paginator(context['chatListAll'], 5)
+        # Paginate chatListAll
+        paginator = Paginator(context['chatListAll'], 10)
         page = self.request.GET.get('page')
-        context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
+        context['chatListAll'] = paginator.get_page(page) 
         
         form = chatModelForm()
 
@@ -224,15 +232,19 @@ def admin_home(request):
     user = request.user
     
     # Get the chats that belong to the logged-in user and are not archived
-    chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
+    chats = chat.objects.filter(archived=False).order_by('-createdDate').values()    
     context['chats'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
     
     # Get the current page number from the request's GET parameters
     page = request.GET.get('page', 1)
     
     # Create a Paginator object with the chats queryset and the desired number of items per page
-    paginator = Paginator(context['chats'], 5)  # Assuming 10 chats per page
+    paginator = Paginator(context['chats'], 10)  # Assuming 10 chats per page
     
+
+    # count the messages
+    info_chats = chat.objects.filter(is_viewed=True)
+    info = {'read_messages':len(info_chats)}
     # Get the Page object for the current page
     page_obj = paginator.get_page(page)
     
@@ -248,4 +260,5 @@ def admin_home(request):
         # Redirect back to the same page
         return redirect(request.META.get('HTTP_REFERER'))
     
+    context['info'] = info
     return render(request, 'admin_home.html', context=context)
