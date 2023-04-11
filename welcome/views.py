@@ -9,8 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q,F
 from .utils import send_signup_email
-from django.contrib.auth.models import User
-from django.views.decorators.http import require_POST
+from django.utils import timezone
+from django.core.paginator import Paginator
+
 
 
 @login_required(login_url='login')
@@ -45,7 +46,6 @@ def login_user(request):
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
                     return redirect('settings')  
-                print('>>>>>>>>>>>>>>>>>',request.user)
                 if request.user.is_staff:
                     return redirect('admin_home')                          
                 return redirect('chat')                  
@@ -112,7 +112,10 @@ class chatDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-        print('>>>>>>>>>>>>>>>>>>>here')
+        selected_chat = self.kwargs['pk']
+        chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
+
+
         if str(self.request.user) != 'admin':
             # context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
             context['chatListAll'] = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
@@ -120,6 +123,11 @@ class chatDetail(DetailView):
         else:
             context['chatListAll'] = chat.objects.all().order_by('-createdDate').values()
 
+        # Paginate chatListAll queryset with 10 items per page
+        paginator = Paginator(context['chatListAll'], 5)
+        page = self.request.GET.get('page')
+        context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
+        
         form = chatModelForm()
 
         context['form'] = form
@@ -179,13 +187,18 @@ def talking(request):
     if str(request.user) != 'admin':
         # chats = chat.objects.filter(Q(chatOwner = user) | Q(chatReceiver = user)).all().order_by('-createdDate').values()
         chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
-
     else:
         chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
 
     form = chatModelForm(request.POST or None, initial={'chatOwner': user,})
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+    print(context['chatListAll'])
+    # Paginate chatListAll queryset with 10 items per page
+    paginator = Paginator(context['chatListAll'], 10)
+    page = request.GET.get('page') # Get current page number from request GET parameters
+    context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
+    # print('kkkkkkkkkkkk',context['chatListAll'])
 
     if request.method == "POST":
         if form.is_valid():
@@ -204,15 +217,27 @@ def delete_chat(request):
         # Redirect back to the same page
         return redirect('talking')
     
+
 @login_required(login_url='login')
 def admin_home(request):
     context = {}
     user = request.user
     
     # Get the chats that belong to the logged-in user and are not archived
-    chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
+    chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
     context['chats'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
-
+    
+    # Get the current page number from the request's GET parameters
+    page = request.GET.get('page', 1)
+    
+    # Create a Paginator object with the chats queryset and the desired number of items per page
+    paginator = Paginator(context['chats'], 5)  # Assuming 10 chats per page
+    
+    # Get the Page object for the current page
+    page_obj = paginator.get_page(page)
+    
+    context['chats'] = page_obj
+    
     if request.method == 'POST':
         # Get the list of IDs of the selected chats
         selected_ids = request.POST.getlist('selected_chats')

@@ -21,7 +21,7 @@ class chatModelForm(forms.ModelForm):
         ]
 
         widgets= {
-            'chatOwner': forms.HiddenInput(),#Select(attrs={'class':'form-control'}),
+            'chatOwner': forms.HiddenInput(),
             'chatTitle' : forms.TextInput(attrs={'class': 'form-control'}),
             'chatReceiver' : forms.Select(attrs={'class': 'form-control'}),
             'chatContent' : forms.Textarea(attrs={'class': 'form-control'}),
@@ -32,8 +32,13 @@ class chatModelForm(forms.ModelForm):
             'chatTitle' : "標題",
             'chatReceiver' : "收件人",
             'chatContent' : "內容",
-
         }
+
+    def __init__(self, *args, **kwargs):
+        super(chatModelForm, self).__init__(*args, **kwargs)
+        # show only the users you want
+        self.fields['chatReceiver'].queryset = User.objects.filter(profile__type__in=['htc_user', 'aicenter'])
+        
 
 class replyModelForm(forms.ModelForm):
 
@@ -50,7 +55,7 @@ class replyModelForm(forms.ModelForm):
             'replyBelongsTo' : forms.HiddenInput(),
             'replyerID' : forms.HiddenInput(),
             'replyDate' : forms.HiddenInput(),
-            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message', 'rows': 3, 'cols' : 100}),
+            'replyContent' : forms.Textarea(attrs={'id':'replyMessageArea','class':'form-control','placeholder':'Send message', 'rows': 3, 'cols' : 100}),
         }
 
         labels = {

@@ -62,7 +62,7 @@ class Profile(models.Model):
     # Add a last_login field as a datetime field with auto_now_add set to True
     last_login = models.DateTimeField(auto_now_add=True)
     # Add a type field as a char field with choices set to USER_TYPE_CHOICES
-    type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)
+    type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='cch_user')
 
     # Define a string representation of the profile model
     def __str__(self):

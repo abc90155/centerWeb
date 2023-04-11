@@ -151,115 +151,87 @@
                   <tr>
                     <th>
                       <div class="chk-option">
-                        <label
-                          class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                          <input type="checkbox" class="custom-control-input">
+                        <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                          <input type="checkbox" class="custom-control-input" id="check-all">
                           <span class="custom-control-label"></span>
                         </label>
                       </div>
-                      Assigned
+                      Title
                     </th>
-                    <th>Name</th>
-                    <th>Due Date</th>
-                    <th class="text-right">Priority</th>
+                    <th>To</th>
+                    <th>Sent Date</th>
+                    <th class="text-right">Viewed</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div class="chk-option">
-                        <label
-                          class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                          <input type="checkbox" class="custom-control-input">
-                          <span class="custom-control-label"></span>
-                        </label>
-                      </div>
-                      <div class="d-inline-block align-middle">
-                        <img src="assets/images/user/avatar-4.jpg" alt="user image"
-                          class="img-radius wid-40 align-top m-r-15">
-                        <div class="d-inline-block">
-                          <h6>John Deo</h6>
-                          <p class="text-muted m-b-0">Graphics Designer</p>
+                <tbody>                                                   
+                  <tbody>
+                    {% for chat in chats %}
+                    {% if chat.is_viewed %}
+                    <!-- set the eye to open if the message has not yet been viewed. -->
+                    <tr >
+                      <td>
+                        <div class="chk-option">
+                          <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                            <input type="checkbox" name="selected_chats" class="checkbox custom-control-input" value="{{chat.id}}">
+                            <span class="custom-control-label"></span>
+                          </label>
                         </div>
-                      </div>
-                    </td>
-                    <td>Able Pro</td>
-                    <td>Jun, 26</td>
-                    <td class="text-right"><label class="badge badge-light-danger">Low</label></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="chk-option">
-                        <label
-                          class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                          <input type="checkbox" class="custom-control-input">
-                          <span class="custom-control-label"></span>
-                        </label>
-                      </div>
-                      <div class="d-inline-block align-middle">
-                        <img src="assets/images/user/avatar-2.jpg" alt="user image"
-                          class="img-radius wid-40 align-top m-r-15">
-                        <div class="d-inline-block">
-                          <h6>Jenifer Vintage</h6>
-                          <p class="text-muted m-b-0">Web Designer</p>
+                        <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
+                          <a href="{% url 'chatDetails' chat.id%}">
+                          {{chat.chatTitle}}</a>
                         </div>
-                      </div>
-                    </td>
-                    <td>Mashable</td>
-                    <td>March, 31</td>
-                    <td class="text-right"><label class="badge badge-light-primary">high</label></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="chk-option">
-                        <label
-                          class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                          <input type="checkbox" class="custom-control-input">
-                          <span class="custom-control-label"></span>
-                        </label>
-                      </div>
-                      <div class="d-inline-block align-middle">
-                        <img src="assets/images/user/avatar-3.jpg" alt="user image"
-                          class="img-radius wid-40 align-top m-r-15">
-                        <div class="d-inline-block">
-                          <h6>William Jem</h6>
-                          <p class="text-muted m-b-0">Developer</p>
+                      </td>
+                      <td>{{chat.chatReceiver_username}}</td>
+                      <td>{{chat.createdDate}}</td>
+                      <td class="text-right"><i class="feather icon-eye-off" style="font-weight: bold;"></i></td>
+                    </tr>
+                    {%else%}
+                    <tr style="font-weight:bolder">
+                      <td>
+                        <div class="chk-option">
+                          <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
+                            <input type="checkbox" name="selected_chats" class="checkbox custom-control-input" value="{{chat.id}}">
+                            <span class="custom-control-label"></span>
+                          </label>
                         </div>
-                      </div>
-                    </td>
-                    <td>Flatable</td>
-                    <td>Aug, 02</td>
-                    <td class="text-right"><label class="badge badge-light-success">medium</label></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="chk-option">
-                        <label
-                          class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                          <input type="checkbox" class="custom-control-input">
-                          <span class="custom-control-label"></span>
-                        </label>
-                      </div>
-                      <div class="d-inline-block align-middle">
-                        <img src="assets/images/user/avatar-2.jpg" alt="user image"
-                          class="img-radius wid-40 align-top m-r-15">
-                        <div class="d-inline-block">
-                          <h6>David Jones</h6>
-                          <p class="text-muted m-b-0">Developer</p>
+                        <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
+                          <a href="{% url 'chatDetails' chat.id%}">
+                            {{chat.chatTitle}}
+                          </a>
                         </div>
-                      </div>
-                    </td>
-                    <td>Guruable</td>
-                    <td>Sep, 22</td>
-                    <td class="text-right"><label class="badge badge-light-primary">high</label></td>
-                  </tr>
+                      </td>
+                      <td>{{chat.chatReceiver_username}}</td>
+                      <td>{{chat.createdDate}}</td>
+                      <td class="text-right"><i class="feather icon-eye-off" style="font-weight: bold;"></i></td>
+                    </tr>
+                    {%endif%}
+                    {% endfor %}
+                  </tbody>
                 </tbody>
-              </table>
+              </table>            
+              <div class="pagination">
+                <span class="step-links">
+                    {% if chats.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ chats.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ chats.number }} of {{ chats.paginator.num_pages }}.
+                    </span>
+
+                    {% if chats.has_next %}
+                        <a href="?page={{ chats.next_page_number }}">next</a>
+                        <a href="?page={{ chats.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div><!-- end col1 row2 -->
+    </div>
+    <!-- end col1 row2 -->
   </div>
   <!-- updates columns -->
   <div class="col-4">
@@ -333,6 +305,5 @@
     </div>
   </div>
 </div>
-
 
 {% endblock %}

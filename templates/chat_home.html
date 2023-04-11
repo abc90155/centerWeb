@@ -6,22 +6,23 @@
 <div class="card chat-card col-lg-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
   <div class="card-header">
     {% if replyForm %}
-      <h5 id="chat_topic_name">Chat: {{title}}</h5>
+    <h5 id="chat_topic_name">Chat: {{title}}</h5>
     {% else %}
-      <h5 id="chat_topic_name">Chat</h5>
+    <h5 id="chat_topic_name">Chat</h5>
     {% endif %}
   </div>
 
-  <div class="card-body" style="height:400px;overflow-x:hidden;overflow-y:auto">    
+  <div class="card-body" id="chatArea" style="height:400px;overflow-x:hidden;overflow-y:auto">
     {%block chatDeatils%}{%endblock%}
   </div>
-  
+
   {% if replyForm %}
   <div class="card-body">
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{replyForm.as_p}}
-        <button class="btn btn-primary float-right" type="submit" value="save"><i class="feather icon-message-circle"></i></button>
+    <form method="POST" action="" id = "replyform">
+      {% csrf_token %}
+      {{replyForm.as_p}}
+      <button class="btn btn-primary float-right" type="submit" value="save" style="position: absolute; bottom: 39px; right: 38px;"><i
+          class="feather icon-message-circle"></i></button>
     </form>
   </div>
   {% endif%}
@@ -34,13 +35,13 @@
       <div class="card-header">
         <h5>Messages</h5>
         <button type="button" class="btn  btn-primary float-right" data-toggle="modal"
-        data-target="#exampleModalCenter">{% trans 'Compose New Message'%}</button>
+          data-target="#exampleModalCenter">{% trans 'Compose New Message'%}</button>
         <button type="submit" class="btn  btn-danger float-right">{% trans 'Delete selected'%}</button>
-          
+
       </div>
       <div class="card-body p-0">
         <div class="table-responsive">
-          
+
           <table class="table table-hover mb-0">
             <thead>
               <tr>
@@ -62,17 +63,18 @@
               {% for chat in chatListAll %}
               {% if chat.is_viewed %}
               <!-- set the eye to open if the message has not yet been viewed. -->
-              <tr >
+              <tr>
                 <td>
                   <div class="chk-option">
                     <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                      <input type="checkbox" name="selected_chats" class="checkbox custom-control-input" value="{{chat.id}}">
+                      <input type="checkbox" name="selected_chats" class="checkbox custom-control-input"
+                        value="{{chat.id}}">
                       <span class="custom-control-label"></span>
                     </label>
                   </div>
                   <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
                     <a href="{% url 'chatDetails' chat.id%}">
-                    {{chat.chatTitle}}</a>
+                      {{chat.chatTitle}}</a>
                   </div>
                 </td>
                 <td>{{chat.chatReceiver_username}}</td>
@@ -84,7 +86,8 @@
                 <td>
                   <div class="chk-option">
                     <label class="check-task custom-control custom-checkbox d-flex justify-content-center done-task">
-                      <input type="checkbox" name="selected_chats" class="checkbox custom-control-input" value="{{chat.id}}">
+                      <input type="checkbox" name="selected_chats" class="checkbox custom-control-input"
+                        value="{{chat.id}}">
                       <span class="custom-control-label"></span>
                     </label>
                   </div>
@@ -102,10 +105,29 @@
               {% endfor %}
             </tbody>
           </table>
+          <!-- Display pagination links -->
+<!-- Display pagination links -->
+<div class="pagination">
+  <span class="step-links">
+      {% if chatListAll.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ chatListAll.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+          Page {{ chatListAll.number }} of {{ chatListAll.paginator.num_pages }}.
+      </span>
+
+      {% if chatListAll.has_next %}
+          <a href="?page={{ chatListAll.next_page_number }}">next</a>
+          <a href="?page={{ chatListAll.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+  </span>
+</div>
         </div>
       </div>
     </div>
-</form>
+  </form>
 </div>
 
 {% endblock %}
@@ -125,13 +147,13 @@
           </button>
         </div>
         <div class="modal-body">
-          
+
           {{form.as_p}}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-primary" value="save">{% trans 'Send' %}</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" value="save">{% trans 'Send' %}</button>
+        </div>
       </form>
     </div>
   </div>
@@ -140,16 +162,25 @@
 
 {%block bottomScript%}
 <script>
-const checkAll = document.getElementById('check-all');
-const checkboxes = document.querySelectorAll('.checkbox');
-let isChecked = false;
-
-checkAll.addEventListener('click', () => {
-  checkboxes.forEach((checkbox) => {
-    checkbox.checked = !isChecked;
+  document.getElementById('replyMessageArea').addEventListener('keydown', function(event) {
+    if (event.keyCode === 13 && !event.shiftKey) { // Check for Enter key without Shift key
+      event.preventDefault(); // Prevent default Enter key behavior (new line)
+      document.getElementById('replyform').submit(); // Trigger form submission
+      document.getElementById('replyform').focus(); // Refocus the textarea
+    }
   });
-  isChecked = !isChecked;
-});
+  </script>
+<script>
+  const checkAll = document.getElementById('check-all');
+  const checkboxes = document.querySelectorAll('.checkbox');
+  let isChecked = false;
+
+  checkAll.addEventListener('click', () => {
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = !isChecked;
+    });
+    isChecked = !isChecked;
+  });
 
 </script>
 {%endblock%}
