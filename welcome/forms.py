@@ -50,7 +50,7 @@ class replyModelForm(forms.ModelForm):
             'replyBelongsTo' : forms.HiddenInput(),
             'replyerID' : forms.HiddenInput(),
             'replyDate' : forms.HiddenInput(),
-            'replyContent' : forms.Textarea(attrs={'class':'form-control','placeholder':'Send message', 'rows': 3, 'cols' : 100}),
+            'replyContent' : forms.Textarea(attrs={'id':'replyMessageArea','class':'form-control','placeholder':'Send message', 'rows': 3, 'cols' : 100}),
         }
 
         labels = {
