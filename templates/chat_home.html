@@ -166,6 +166,7 @@
     if (event.keyCode === 13 && !event.shiftKey) { // Check for Enter key without Shift key
       event.preventDefault(); // Prevent default Enter key behavior (new line)
       document.getElementById('replyform').submit(); // Trigger form submission
+      document.getElementById('replyform').focus(); // Refocus the textarea
     }
   });
   </script>

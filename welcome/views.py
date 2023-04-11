@@ -46,7 +46,6 @@ def login_user(request):
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
                     return redirect('settings')  
-                print('>>>>>>>>>>>>>>>>>',request.user)
                 if request.user.is_staff:
                     return redirect('admin_home')                          
                 return redirect('chat')                  
@@ -182,7 +181,6 @@ def settings(request):
     
 @login_required(login_url='login')
 def talking(request):
-    # print('welcomeeeeeeeeeeeeeeeeeeeeeeeee')
     context = {}
     user = request.user
 
@@ -195,7 +193,7 @@ def talking(request):
     form = chatModelForm(request.POST or None, initial={'chatOwner': user,})
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
-
+    print(context['chatListAll'])
     # Paginate chatListAll queryset with 10 items per page
     paginator = Paginator(context['chatListAll'], 10)
     page = request.GET.get('page') # Get current page number from request GET parameters
