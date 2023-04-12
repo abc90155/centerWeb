@@ -3,7 +3,7 @@
 {% block chatContent %}
 <!-- left side chart area -->
 
-<div class="card chat-card col-lg-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
+<div class="card chat-card col-xl-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
   <div class="card-header">
     {% if replyForm %}
     <h5 id="chat_topic_name">Chat: {{title}}</h5>
@@ -175,7 +175,7 @@
       document.getElementById('replyform').focus(); // Refocus the textarea
     }
   });
-  
+
   const checkAll = document.getElementById('check-all');
   const checkboxes = document.querySelectorAll('.checkbox');
   let isChecked = false;
