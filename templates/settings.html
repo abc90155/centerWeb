@@ -16,12 +16,12 @@
             <div class="card" style="min-height: 600px;">
                 <h5 class="card-header">{% trans 'Team Information'%}</h5>
                 {% if messages %}
-                {% for message in messages %}
-                    <div class="alert bg-{% if message.tags == 'error'%}danger{%else%}{{ message.tags }}{%endif%} text-light p-3" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
-                            {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
+                    {% for message in messages %}
+                        <div class="alert bg-{% if message.tags == 'error'%}danger{%else%}{{ message.tags }}{%endif%} text-light p-3" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+                                {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 <div class="card-body">
                     <!-- <h5 class="card-title">Special title treatment</h5> -->
 

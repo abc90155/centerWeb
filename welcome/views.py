@@ -19,7 +19,7 @@ def index(request):
     context = {}
     context["name"] = "Hello, World."
     
-    return render(request, "temp.html", context)
+    return render(request, "chat_base_template.html", context)
         
 def logout_view(request):
     logout(request)
@@ -47,7 +47,7 @@ def login_user(request):
                         request.session['user']['type'] = 'Administrator'
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
-                    return redirect('settings')  
+                    return redirect('settings')
                 if request.user.is_staff:
                     return redirect('admin_home')                          
                 return redirect('talking')                  
@@ -176,10 +176,24 @@ def settings(request):
         profile.company = request.POST['company']
         profile.workid = request.POST['work_id']
         profile.department = request.POST['department']
-        # profile.type = 'request.POST['user_type']'
+        
         profile.user.save()
         profile.save()
         messages.success(request, 'Profile updated successfully.')
+
+        name = request.user.first_name + ' ' + request.user.last_name
+        request.session['user'] = {
+            'name':name
+        }
+        
+        try:
+            profile = Profile.objects.get(user=request.user)
+            request.session['user']['type'] = 'User'
+            if request.user.is_staff:
+                request.session['user']['type'] = 'Administrator'
+        except Profile.DoesNotExist:
+            messages.info(request,_('Set up your profile'))
+            return redirect('settings')
 
         # Redirect the user back to the settings page
         return redirect('settings')
