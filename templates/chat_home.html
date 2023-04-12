@@ -175,8 +175,7 @@
       document.getElementById('replyform').focus(); // Refocus the textarea
     }
   });
-  </script>
-<script>
+  
   const checkAll = document.getElementById('check-all');
   const checkboxes = document.querySelectorAll('.checkbox');
   let isChecked = false;
@@ -188,5 +187,8 @@
     isChecked = !isChecked;
   });
 
+  $(document).ready(function(){
+      $("#chatArea").scrollTop($(document).height());
+  });
 </script>
 {%endblock%}
