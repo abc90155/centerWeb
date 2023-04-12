@@ -106,24 +106,17 @@
             </tbody>
           </table>
           <!-- Display pagination links -->
-<!-- Display pagination links -->
-<div class="pagination">
-  <span class="step-links">
-      {% if chatListAll.has_previous %}
-          <a href="?page=1">&laquo; first</a>
-          <a href="?page={{ chatListAll.previous_page_number }}">previous</a>
-      {% endif %}
-
-      <span class="current">
-          Page {{ chatListAll.number }} of {{ chatListAll.paginator.num_pages }}.
-      </span>
-
-      {% if chatListAll.has_next %}
-          <a href="?page={{ chatListAll.next_page_number }}">next</a>
-          <a href="?page={{ chatListAll.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-  </span>
-</div>
+          <div style="text-align:center;">
+            <span class="step-links">
+              {% for page_number in chatListAll.paginator.page_range %}
+                {% if page_number == chatListAll.number %}
+                  {{ page_number }}
+                {% else %}
+                  <a href="?page={{ page_number }}">{{ page_number }}</a>
+                {% endif %}
+              {% endfor %}
+            </span>
+          </div>
         </div>
       </div>
     </div>

@@ -219,8 +219,11 @@ def talking(request):
     # Paginate chatListAll queryset with 10 items per page
     paginator = Paginator(context['chatListAll'], 10)
     page = request.GET.get('page') # Get current page number from request GET parameters
-    context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
-    # print('kkkkkkkkkkkk',context['chatListAll'])
+
+    try:
+        context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
+    except PageNotAnInteger:
+        context['chatListAll'] = paginator.get_page(1)
 
     if request.method == "POST":
         if form.is_valid():
