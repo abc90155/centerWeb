@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from welcome.views import index
+from welcome.views import index, activate
 
 urlpatterns = [
     path('', index, name="welcome"),
     path('welcome/', include('welcome.urls')),
     path('admin/', admin.site.urls),
+    path('activate/<str:token>/', activate, name='activate'),
+
 ]
