@@ -11,7 +11,7 @@ from django.db.models import Q,F
 from .utils import send_signup_email
 from django.utils import timezone
 from django.core.paginator import Paginator
-from sendmail import sendNotificationMail,sendamail
+from sendmail import sendamail
 from django.urls import reverse
 
 import secrets
@@ -23,7 +23,7 @@ def index(request):
     context = {}
     context["name"] = "Hello, World."
     
-    return render(request, "temp.html", context)
+    return render(request, "chat_home.html", context)
         
 def logout_view(request):
     logout(request)
@@ -217,7 +217,7 @@ class chatDetail(DetailView):
         
         if form.is_valid():
             form.save()
-            sendNotificationMail()
+            
             
             return HttpResponseRedirect('/welcome/chat/' + str(pk)+'?page='+str(page))
         else:

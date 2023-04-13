@@ -35,7 +35,7 @@
     {% csrf_token %}
     <div class="card table-card" style="min-height: 550px;">
       <div class="card-header">
-        <h5>Messages</h5>
+        <h5>{% trans 'Messages'%}</h5>
         <button type="button" class="btn  btn-primary float-right" data-toggle="modal"
           data-target="#exampleModalCenter">{% trans 'Compose New Message'%}</button>
         <button type="submit" class="btn  btn-danger float-right">{% trans 'Delete selected'%}</button>
@@ -54,11 +54,11 @@
                       <span class="custom-control-label"></span>
                     </label>
                   </div>
-                  Title
+                  {% trans 'Title'%}
                 </th>
-                <th>To</th>
-                <th>Sent Date</th>
-                <th class="text-right">Viewed</th>
+                <th>{% trans 'To'%}</th>
+                <th>{% trans 'Sent Date'%}</th>
+                <th class="text-right">{% trans 'Viewed'%}</th>
               </tr>
             </thead>
             <tbody>
