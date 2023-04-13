@@ -116,12 +116,6 @@ class chatDetail(DetailView):
         user = self.request.user
         selected_chat = self.kwargs['pk']
         chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
-        # chat_obj = chat.objects.get(id=selected_chat)
-        # print('hhhhhhhhhhhhhhhhhhhhhhh',chat_obj.chatReceiver,user)
-        # if user != chat_obj.chatOwner:
-        #     chat_obj.is_viewed = True
-        #     chat_obj.viewedDate = timezone.now()
-        #     chat_obj.save()
 
 
         if str(self.request.user) != 'admin':
@@ -134,6 +128,7 @@ class chatDetail(DetailView):
         # Paginate chatListAll
         paginator = Paginator(context['chatListAll'], 10)
         page = self.request.GET.get('page')
+        self.request.session['page'] = page
         context['chatListAll'] = paginator.get_page(page) 
         
         form = chatModelForm()
@@ -151,13 +146,17 @@ class chatDetail(DetailView):
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
+        page = 1
+        if self.request.session.get('page'):
+            page = self.request.session['page']
+
         pk = self.kwargs['pk']
         form = replyModelForm(request.POST or None)
         
         if form.is_valid():
             form.save()
             
-            return HttpResponseRedirect('/welcome/chat/' + str(pk))
+            return HttpResponseRedirect('/welcome/chat/' + str(pk)+'?page='+str(page))
         else:
             print("YOU SHALL NOT PASS!")
 
@@ -201,12 +200,12 @@ def talking(request):
     form = chatModelForm(request.POST or None, initial={'chatOwner': user,})
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
-    print(context['chatListAll'])
     # Paginate chatListAll queryset with 10 items per page
     paginator = Paginator(context['chatListAll'], 10)
     page = request.GET.get('page') # Get current page number from request GET parameters
+    if not request.session.get('page'):
+        request.session['page'] = page
     context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
-    # print('kkkkkkkkkkkk',context['chatListAll'])
 
     if request.method == "POST":
         if form.is_valid():

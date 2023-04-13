@@ -3,7 +3,7 @@
 {% block chatContent %}
 <!-- left side chart area -->
 
-<div class="card chat-card col-lg-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
+<div class="card chat-card col-xl-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
   <div class="card-header">
     {% if replyForm %}
     <h5 id="chat_topic_name">Chat: {{title}}</h5>
@@ -73,7 +73,7 @@
                     </label>
                   </div>
                   <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
-                    <a href="{% url 'chatDetails' chat.id%}">
+                    <a href="{% url 'chatDetails' chat.id%}?page={{request.session.page}}">
                       {{chat.chatTitle}}</a>
                   </div>
                 </td>
@@ -92,7 +92,7 @@
                     </label>
                   </div>
                   <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
-                    <a href="{% url 'chatDetails' chat.id%}">
+                    <a href="{% url 'chatDetails' chat.id%}?page={{request.session.page}}">
                       {{chat.chatTitle}}
                     </a>
                   </div>
