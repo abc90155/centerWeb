@@ -111,13 +111,14 @@ class chatDetail(DetailView):
     template_name = 'chatDetail.html'
     replys = replyModelForm
     
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         selected_chat = self.kwargs['pk']
-        chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
-
+        
+        receiv = chat.objects.filter(Q(id=selected_chat)).values('chatReceiver')
+        if self.request.user.id == receiv[0]['chatReceiver']:
+            chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
 
         if str(self.request.user) != 'admin':
             # context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
@@ -140,7 +141,7 @@ class chatDetail(DetailView):
 
         #replys about this topic
         context['replys'] = replys.objects.filter(replyBelongsTo_id = self.kwargs['pk']).all().values()
-
+        
         context['replyForm'] = replyModelForm(initial={'replyBelongsTo': self.get_object(), 'replyerID': self.request.user,})
 
         return context
