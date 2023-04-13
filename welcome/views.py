@@ -11,6 +11,7 @@ from django.db.models import Q,F
 from .utils import send_signup_email
 from django.utils import timezone
 from django.core.paginator import Paginator
+from sendmail import sendNotificationMail
 
 
 
@@ -155,6 +156,7 @@ class chatDetail(DetailView):
         
         if form.is_valid():
             form.save()
+            sendNotificationMail()
             
             return HttpResponseRedirect('/welcome/chat/' + str(pk)+'?page='+str(page))
         else:
@@ -197,7 +199,7 @@ def talking(request):
     else:
         chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
 
-    form = chatModelForm(request.POST or None, initial={'chatOwner': user,})
+    form = chatModelForm(request.POST or None)
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
     # Paginate chatListAll queryset with 10 items per page
@@ -209,6 +211,7 @@ def talking(request):
 
     if request.method == "POST":
         if form.is_valid():
+            form.instance.chatOwner = request.user
             form.save()
             return HttpResponseRedirect('/welcome/talking')
     
