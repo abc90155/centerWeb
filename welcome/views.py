@@ -11,6 +11,7 @@ from django.db.models import Q,F
 from .utils import send_signup_email
 from django.utils import timezone
 from django.core.paginator import Paginator
+from sendmail import sendNotificationMail
 
 
 
@@ -19,7 +20,7 @@ def index(request):
     context = {}
     context["name"] = "Hello, World."
     
-    return render(request, "chat_base_template.html", context)
+    return render(request, "temp.html", context)
         
 def logout_view(request):
     logout(request)
@@ -47,7 +48,7 @@ def login_user(request):
                         request.session['user']['type'] = 'Administrator'
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
-                    return redirect('settings')
+                    return redirect('settings')  
                 if request.user.is_staff:
                     return redirect('admin_home')                          
                 return redirect('talking')                  
@@ -116,12 +117,6 @@ class chatDetail(DetailView):
         user = self.request.user
         selected_chat = self.kwargs['pk']
         chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
-        # chat_obj = chat.objects.get(id=selected_chat)
-        # print('hhhhhhhhhhhhhhhhhhhhhhh',chat_obj.chatReceiver,user)
-        # if user != chat_obj.chatOwner:
-        #     chat_obj.is_viewed = True
-        #     chat_obj.viewedDate = timezone.now()
-        #     chat_obj.save()
 
 
         if str(self.request.user) != 'admin':
@@ -134,6 +129,7 @@ class chatDetail(DetailView):
         # Paginate chatListAll
         paginator = Paginator(context['chatListAll'], 10)
         page = self.request.GET.get('page')
+        self.request.session['page'] = page
         context['chatListAll'] = paginator.get_page(page) 
         
         form = chatModelForm()
@@ -151,13 +147,18 @@ class chatDetail(DetailView):
     
     @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
+        page = 1
+        if self.request.session.get('page'):
+            page = self.request.session['page']
+
         pk = self.kwargs['pk']
         form = replyModelForm(request.POST or None)
         
         if form.is_valid():
             form.save()
+            sendNotificationMail()
             
-            return HttpResponseRedirect('/welcome/chat/' + str(pk))
+            return HttpResponseRedirect('/welcome/chat/' + str(pk)+'?page='+str(page))
         else:
             print("YOU SHALL NOT PASS!")
 
@@ -176,24 +177,10 @@ def settings(request):
         profile.company = request.POST['company']
         profile.workid = request.POST['work_id']
         profile.department = request.POST['department']
-        
+        # profile.type = 'request.POST['user_type']'
         profile.user.save()
         profile.save()
         messages.success(request, 'Profile updated successfully.')
-
-        name = request.user.first_name + ' ' + request.user.last_name
-        request.session['user'] = {
-            'name':name
-        }
-        
-        try:
-            profile = Profile.objects.get(user=request.user)
-            request.session['user']['type'] = 'User'
-            if request.user.is_staff:
-                request.session['user']['type'] = 'Administrator'
-        except Profile.DoesNotExist:
-            messages.info(request,_('Set up your profile'))
-            return redirect('settings')
 
         # Redirect the user back to the settings page
         return redirect('settings')
@@ -212,21 +199,19 @@ def talking(request):
     else:
         chats = chat.objects.filter(archived=False).order_by('-createdDate').values()
 
-    form = chatModelForm(request.POST or None, initial={'chatOwner': user,})
+    form = chatModelForm(request.POST or None)
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
-    print(context['chatListAll'])
     # Paginate chatListAll queryset with 10 items per page
     paginator = Paginator(context['chatListAll'], 10)
     page = request.GET.get('page') # Get current page number from request GET parameters
-
-    try:
-        context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
-    except PageNotAnInteger:
-        context['chatListAll'] = paginator.get_page(1)
+    if not request.session.get('page'):
+        request.session['page'] = page
+    context['chatListAll'] = paginator.get_page(page) # Get paginated queryset for current page
 
     if request.method == "POST":
         if form.is_valid():
+            form.instance.chatOwner = request.user
             form.save()
             return HttpResponseRedirect('/welcome/talking')
     

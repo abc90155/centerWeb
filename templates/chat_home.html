@@ -73,7 +73,7 @@
                     </label>
                   </div>
                   <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
-                    <a href="{% url 'chatDetails' chat.id%}">
+                    <a href="{% url 'chatDetails' chat.id%}?page={{request.session.page}}">
                       {{chat.chatTitle}}</a>
                   </div>
                 </td>
@@ -92,7 +92,7 @@
                     </label>
                   </div>
                   <div class="d-inline-block" style="width:20rem;overflow:hidden;text-overflow:ellipsis">
-                    <a href="{% url 'chatDetails' chat.id%}">
+                    <a href="{% url 'chatDetails' chat.id%}?page={{request.session.page}}">
                       {{chat.chatTitle}}
                     </a>
                   </div>
