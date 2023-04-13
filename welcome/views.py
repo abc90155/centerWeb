@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.db.models import Q,F
 from .utils import send_signup_email
@@ -217,7 +218,11 @@ class chatDetail(DetailView):
         
         if form.is_valid():
             form.save()
-            sendNotificationMail()
+            
+            selected_chat = self.kwargs['pk']
+            receiv = chat.objects.filter(Q(id=selected_chat)).values('chatReceiver')
+            mailReceiver = User.objects.filter(Q(id = receiv[0]['chatReceiver'])).values('email')
+            sendamail(content = "You have a message from CCH AI platform.", to = mailReceiver[0]['email'])
             
             return HttpResponseRedirect('/welcome/chat/' + str(pk)+'?page='+str(page))
         else:
