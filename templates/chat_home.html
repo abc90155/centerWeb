@@ -79,7 +79,7 @@
                 </td>
                 <td>{{chat.chatReceiver_username}}</td>
                 <td>{{chat.createdDate}}</td>
-                <td class="text-right"><i class="feather icon-eye-off" style="font-weight: bold;"></i></td>
+                <td class="text-right"><i class="feather icon-eye" style="font-weight: bold;"></i></td>
               </tr>
               {%else%}
               <tr style="font-weight:bolder">
@@ -106,24 +106,30 @@
             </tbody>
           </table>
           <!-- Display pagination links -->
-<!-- Display pagination links -->
-<div class="pagination">
-  <span class="step-links">
-      {% if chatListAll.has_previous %}
-          <a href="?page=1">&laquo; first</a>
-          <a href="?page={{ chatListAll.previous_page_number }}">previous</a>
-      {% endif %}
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              {% if chatListAll.has_previous  %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ chatListAll.previous_page_number  }}">Previous</a>
+                </li>
+              {% endif %}
+              {% for page_number in chatListAll.paginator.page_range %}
+                {% if page_number == chatListAll.number %}
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">{{ page_number }}</a>
+                  </li>
+                {% else %}
+                  <li class="page-item"><a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a></li>
+                {% endif %}
+              {% endfor %}
 
-      <span class="current">
-          Page {{ chatListAll.number }} of {{ chatListAll.paginator.num_pages }}.
-      </span>
-
-      {% if chatListAll.has_next %}
-          <a href="?page={{ chatListAll.next_page_number }}">next</a>
-          <a href="?page={{ chatListAll.paginator.num_pages }}">last &raquo;</a>
-      {% endif %}
-  </span>
-</div>
+              {% if chatListAll.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ chatListAll.next_page_number }}">Next</a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
         </div>
       </div>
     </div>
@@ -169,8 +175,7 @@
       document.getElementById('replyform').focus(); // Refocus the textarea
     }
   });
-  </script>
-<script>
+
   const checkAll = document.getElementById('check-all');
   const checkboxes = document.querySelectorAll('.checkbox');
   let isChecked = false;
@@ -182,5 +187,8 @@
     isChecked = !isChecked;
   });
 
+  $(document).ready(function(){
+      $("#chatArea").scrollTop($(document).height());
+  });
 </script>
 {%endblock%}
