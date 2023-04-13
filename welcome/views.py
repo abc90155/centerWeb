@@ -11,7 +11,10 @@ from django.db.models import Q,F
 from .utils import send_signup_email
 from django.utils import timezone
 from django.core.paginator import Paginator
-from sendmail import sendNotificationMail
+from sendmail import sendNotificationMail,sendamail
+from django.urls import reverse
+
+import secrets
 
 
 
@@ -42,13 +45,16 @@ def login_user(request):
                     'name':name
                 }
                 try:
-                    profile = Profile.objects.get(user=request.user)
+                    profile = Profile.objects.get(user=request.user)                    
                     request.session['user']['type'] = 'User'
                     if request.user.is_staff:
                         request.session['user']['type'] = 'Administrator'
                 except Profile.DoesNotExist:
                     messages.info(request,_('Set up your profile'))
                     return redirect('settings')  
+                if not request.user.first_name:
+                    messages.info(request, _('Set up your profile'))
+                    return redirect('settings')
                 if request.user.is_staff:
                     return redirect('admin_home')                          
                 return redirect('talking')                  
@@ -59,6 +65,62 @@ def login_user(request):
             return render(request, 'login.html',{'form':form})
 
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect('welcome')
+    context = {"test":'tested'}
+    signup_form = SignUpForm()
+    
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False  # Set user account as inactive
+            user.save()
+
+            # Generate activation token
+            token = secrets.token_urlsafe(32)
+
+            # Create and associate profile model with user model
+            profile = Profile(user=user, activation_token=token)
+            profile.save()
+
+
+            # Send activation link to user's email
+            # activation_link = request.build_absolute_uri(f'/activate/{token}/')
+            activation_link = request.build_absolute_uri(reverse('activate', args=[token]))
+            message = "Dear user, <br> Thank you for signing up to our service. follow the link belwow to activate your account <br>  <h2> <a href = '{}'>ACTIVATE ACCOUNT</a></h2>".format(activation_link)
+            sendamail(content = message, to=user.email)  # Implement your own email sending logic
+
+            messages.warning(request, _('Please check your inbox to continue signup'))
+            return redirect('signup')
+        else:
+            print(form.errors)
+            messages.warning(request, form.errors)
+    
+    context['signupform'] = signup_form
+    return render(request, 'signup.html', context)
+
+def activate(request, token):
+    try:
+        # Find the profile associated with the activation token
+        profile = Profile.objects.get(activation_token=token)
+        user = profile.user
+
+        # Set the user account to active
+        user.is_active = True
+        user.save()
+
+        # Delete the activation token from the profile
+        profile.activation_token = None
+        profile.save()
+
+        messages.success(request, 'Your account has been activated. You can now login.')
+        return redirect('login')
+    except Profile.DoesNotExist:
+        messages.warning(request, 'Invalid activation link.')
+        return redirect('signup')
+
+def signupold(request):
     if request.user.is_authenticated:
         return redirect('welcome')
     context = {"test":'tested'}
@@ -121,9 +183,7 @@ class chatDetail(DetailView):
             chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
 
         if str(self.request.user) != 'admin':
-            # context['chatListAll'] = chat.objects.filter(Q(chatOwner = self.request.user) | Q(chatReceiver = self.request.user)).all().order_by('-createdDate').values()
             context['chatListAll'] = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
-
         else:
             context['chatListAll'] = chat.objects.all().order_by('-createdDate').values()
 
@@ -167,7 +227,7 @@ class chatDetail(DetailView):
 @login_required(login_url='login')
 def settings(request):
     # Get the profile of the current user or create one if it doesn't exist
-    profile, created = Profile.objects.get_or_create(user=request.user)
+    profile, _ = Profile.objects.get_or_create(user=request.user)
     profile_dict = {'profile': profile, 'first_name': request.user.first_name, 'last_name': request.user.last_name}
     if request.method == 'POST':
         # Update the profile with the form data

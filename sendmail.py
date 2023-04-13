@@ -4,6 +4,7 @@ import smtplib
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import secrets
 
 def sendNotificationMail_plain():
     fromaddr = '184319@cch.org.tw'
@@ -52,5 +53,43 @@ def sendNotificationMail():
     s.sendmail(From, to, msg.as_string())
     s.quit()
 
+
+def sendamail(content, From = "D9079@cch.org.tw", to = "actechforlife@gmail.com"):
+    
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = "CCH-AI Center: Reply Notification"
+    msg['From'] = From
+    msg['To'] = to
+
+    
+    html = """\
+    <html>
+    <head></head>
+    <body>
+        <p>{}</p>
+        <p>CCH - AI Center</p>
+    </body>
+    </html>
+    """.format(content)
+
+    part2 = MIMEText(html, 'html')
+
+    msg.attach(part2)
+
+    # Send the message via local SMTP server.
+    s = smtplib.SMTP('172.28.25.5')
+    # sendmail function takes 3 arguments: sender's address, recipient's address
+    # and message to send - here it is sent as one string.
+    s.sendmail(From, to, msg.as_string())
+    s.quit()
+
 if __name__ == '__main__':
-    sendNotificationMail()
+    # sendamail("<a href = '#'>there message is here</a>")
+    # Generate activation token
+    s = 1
+    token = secrets.token_urlsafe(s)
+    print(token)
+
+    # Send activation link to user's email
+    # activation_link = request.build_absolute_uri(f'/activate/{token}/')
+    # sendamail(content = activation_link)  # Implement your own email sending logic
