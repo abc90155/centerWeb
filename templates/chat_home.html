@@ -4,28 +4,30 @@
 <!-- left side chart area -->
 
 <div class="card chat-card col-xl-6 col-md-12" style="min-height: 550px;overflow-x:hidden;overflow-y: auto;">
-  <div class="card-header">
+  {% if request.user == object.chatOwner or request.user == object.chatReceiver %}
+    <div class="card-header">
+      {% if replyForm %}
+      <h5 id="chat_topic_name">Chat: {{title}}</h5>
+      {% else %}
+      <h5 id="chat_topic_name">Chat</h5>
+      {% endif %}
+    </div>
+
+    <div class="card-body" id="chatArea" style="height:400px;overflow-x:hidden;overflow-y:auto">
+      {%block chatDeatils%}{%endblock%}
+    </div>
+
     {% if replyForm %}
-    <h5 id="chat_topic_name">Chat: {{title}}</h5>
-    {% else %}
-    <h5 id="chat_topic_name">Chat</h5>
-    {% endif %}
-  </div>
-
-  <div class="card-body" id="chatArea" style="height:400px;overflow-x:hidden;overflow-y:auto">
-    {%block chatDeatils%}{%endblock%}
-  </div>
-
-  {% if replyForm %}
-  <div class="card-body">
-    <form method="POST" action="" id = "replyform">
-      {% csrf_token %}
-      {{replyForm.as_p}}
-      <button class="btn btn-primary float-right" type="submit" value="save" style="position: absolute; bottom: 39px; right: 38px;"><i
-          class="feather icon-message-circle"></i></button>
-    </form>
-  </div>
-  {% endif%}
+    <div class="card-body">
+      <form method="POST" action="" id = "replyform">
+        {% csrf_token %}
+        {{replyForm.as_p}}
+        <button class="btn btn-primary float-right" type="submit" value="save" style="position: absolute; bottom: 39px; right: 38px;"><i
+            class="feather icon-message-circle"></i></button>
+      </form>
+    </div>
+    {% endif%}
+  {% endif %}
 </div>
 <!--end of chat area-->
 <div class="col-xl-6 col-md-12">
