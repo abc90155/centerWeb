@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from .forms import chatModelForm, replyModelForm, LoginForm,SignUpForm
 from .models import chat, replys, Profile
 from django.views.generic import DetailView
@@ -182,12 +182,13 @@ class chatDetail(DetailView):
         receiv = chat.objects.filter(Q(id=selected_chat)).values('chatReceiver')
         if self.request.user.id == receiv[0]['chatReceiver']:
             chat.objects.filter(id=selected_chat).update(is_viewed=True, viewedDate=timezone.now())
-
-        if str(self.request.user) != 'admin':
-            context['chatListAll'] = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
+        
+        if str(user) != 'aicenter':
+            chats = chat.objects.filter(Q(chatOwner=user) | Q(chatReceiver=user), archived=False).order_by('-createdDate')
         else:
-            context['chatListAll'] = chat.objects.all().order_by('-createdDate').values()
-
+            chats = chat.objects.all().order_by('-createdDate').values()
+        context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+            
         # Paginate chatListAll
         paginator = Paginator(context['chatListAll'], 10)
         page = self.request.GET.get('page')
@@ -268,6 +269,7 @@ def talking(request):
     form = chatModelForm(request.POST or None)
     context['form'] = form
     context['chatListAll'] = chats.annotate(chatReceiver_username=F('chatReceiver__username')).values()
+    
     # Paginate chatListAll queryset with 10 items per page
     paginator = Paginator(context['chatListAll'], 10)
     page = request.GET.get('page') # Get current page number from request GET parameters
