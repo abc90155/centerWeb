@@ -37,8 +37,8 @@
       <div class="card-header">
         <h5>{% trans 'Messages'%}</h5>
         <button type="button" class="btn  btn-primary float-right" data-toggle="modal"
-          data-target="#exampleModalCenter">{% trans 'Compose New Message'%}</button>
-        <button type="submit" class="btn  btn-danger float-right">{% trans 'Delete selected'%}</button>
+          data-target="#exampleModalCenter">{% trans '建立新對話'%}</button>
+        <button type="submit" class="btn  btn-danger float-right">{% trans '刪除對話'%}</button>
 
       </div>
       <div class="card-body p-0">
@@ -54,11 +54,11 @@
                       <span class="custom-control-label"></span>
                     </label>
                   </div>
-                  {% trans 'Title'%}
+                  {% trans '對話標題'%}
                 </th>
-                <th>{% trans 'To'%}</th>
-                <th>{% trans 'Sent Date'%}</th>
-                <th class="text-right">{% trans 'Viewed'%}</th>
+                <th>{% trans '收件者'%}</th>
+                <th>{% trans '日期'%}</th>
+                <th class="text-right">{% trans '已讀'%}</th>
               </tr>
             </thead>
             <tbody>
@@ -149,7 +149,7 @@
       <form method="POST" action="{% url 'talking' %}">
         {% csrf_token %}
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLongTitle">New Message</h5>
+          <h5 class="modal-title" id="exampleModalLongTitle">新訊息建立視窗</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -159,8 +159,8 @@
           {{form.as_p}}
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary" value="save">{% trans 'Send' %}</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+          <button type="submit" class="btn btn-primary" value="save">{% trans '送出' %}</button>
         </div>
       </form>
     </div>
