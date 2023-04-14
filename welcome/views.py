@@ -241,6 +241,9 @@ def settings(request):
         request.user.last_name = request.POST['last_name']
         request.user.save()
 
+        name = request.user.first_name + ' ' + request.user.last_name
+        request.session['user'] = {'name':name}
+
         profile.company = request.POST['company']
         profile.workid = request.POST['work_id']
         profile.department = request.POST['department']
