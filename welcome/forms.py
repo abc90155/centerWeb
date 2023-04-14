@@ -77,10 +77,10 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ['company', 'department', 'workid', 'type']
         labels = {
-            'company': 'Company',
-            'department': 'Department',
-            'workid': 'Work ID',
-            'type': 'User Type'
+            'company': '公司',
+            'department': '部門',
+            'workid': '員工編號',
+            'type': '部門分類'
         }
         widgets = {
             'company': forms.Select(choices=USER_COMPANY_CHOICES, attrs={'class': 'form-control'}),

@@ -17,7 +17,6 @@ def sendamail(content, From = "D9079@cch.org.tw", to = "D9079@cch.org.tw"):
     <head></head>
     <body>
         <p>{}</p>
-        <p>CCH - AI Center</p>
 <pre>
 Changhua Christian Hospital
 AI Research Center

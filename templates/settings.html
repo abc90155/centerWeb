@@ -4,7 +4,7 @@
 
 {%block chatContent%}
 <div class="row">
-    <h1>{% trans 'Set up Your Profile'%}</h1>
+    <h1>{% trans '個人設定'%}</h1>
 </div>
 <hr>
 <form method="POST" action="">
@@ -14,7 +14,6 @@
         <div class="col-md-12 col-xl-4">
 
             <div class="card" style="min-height: 600px;">
-                <h5 class="card-header">{% trans 'Team Information'%}</h5>
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert bg-{% if message.tags == 'error'%}danger{%else%}{{ message.tags }}{%endif%} text-light p-3" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
@@ -26,21 +25,21 @@
                     <!-- <h5 class="card-title">Special title treatment</h5> -->
 
                     <div class="form-group">
-                        <label for="username">{% trans 'Username'%}:</label>
+                        <label for="username">{% trans '帳號'%}:</label>
                         <input type="text" id="username" name="username" class="form-control" value="{{profile.user}}"
                             readonly>
                     </div>
                     <div class="form-group">
-                        <label for="first_name">{% trans 'First Name'%}:</label>
+                        <label for="first_name">{% trans '名字'%}:</label>
                         <input type="text" id="first_name" value="{{first_name}}" name="first_name" class="form-control" required>
                     </div>
                     <div class="form-group">                        
-                        <label for="last_name">{% trans 'Last Name'%}:</label>
+                        <label for="last_name">{% trans '姓'%}:</label>
                         <input type="text" id="last_name" value="{{last_name}}" name="last_name" class="form-control" required>
                     </div>
                     <div class="form-group">
                         
-                        <label for="company">{% trans 'Company'%}:</label>
+                        <label for="company">{% trans '公司'%}:</label>
                         <select id="company" name="company" class="form-control" required>
                             <option value="">--Select--</option>
                             <option value="CCH" {% if profile.company == 'CCH' %}selected{% endif %}>{% trans 'CHanghua Christian Hospital'%}</option>
@@ -49,11 +48,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="work_id">{% trans 'Work ID'%}:</label>
+                        <label for="work_id">{% trans '員工編號'%}:</label>
                         <input type="text" id="work_id" value = "{{profile.workid}}" name="work_id" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label for="department">{% trans 'Department'%}:</label>
+                        <label for="department">{% trans '部門'%}:</label>
                         <input type="text" id="department" name="department" value = "{{profile.department}}" class="form-control" required>
                     </div>
                     <input type="submit" value="Submit" class="btn btn-primary">
