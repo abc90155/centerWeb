@@ -1,2 +1,10 @@
 Django>=4.1
 psycopg2>=2.7,<3.0
+django-sslserver
+
+RUN pip freeze > requirements.txt
+
+
+      
+
+

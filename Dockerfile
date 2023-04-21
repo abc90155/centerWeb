@@ -1,7 +1,9 @@
 FROM python:3.9
-LABEL MAINTAINER KPY
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /centerWeb
-WORKDIR /centerWeb
-COPY . /centerWeb/
-RUN pip install -r requirements.txt
+RUN mkdir /docker_api
+WORKDIR /docker_api
+COPY . /docker_api/
+RUN pip install --upgrade pip
+RUN pip install Django
+RUN pip install psycopg2-binary
+RUN pip install whitenoise
