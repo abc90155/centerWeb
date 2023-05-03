@@ -1,0 +1,9 @@
+Django to communicate(not immediately) with others with topics
+
+Dockerized and bind volume with these changes
+1. command: docker volume create --driver local --opt type=none --opt device=YOUR FOLDER PATH --opt o=bind api_data
+2. modfify docker-compose.yml
+  volumes:
+    api_data:
+      external:True
+3. command: docker-compose up      
